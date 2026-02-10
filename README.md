@@ -1,1 +1,1 @@
-# genmono2StatusSimulator
+# げんもの２ステータスシミュレータ
