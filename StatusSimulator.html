@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻獣ステータスシミュレータ v0.3.15</title>
+    <link rel="stylesheet" href="style.css">
+
+
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4160264912778548"
+     crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+
+<header class="project-header">
+    <a href="./" class="header-link">Index</a>
+    <button class="reset-btn" onclick="systemReset()">Reset</button>
+</header>
+
+<div class="container">
+    <section>
+        <div class="genjyu-header" style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div>
+                <span class="cur-name-text" id="cur-name">読み込み中...</span>
+                <span id="cur-class" class="badge">-</span>
+                <span id="cur-type" class="badge">-</span>
+            </div>
+		<div id="reinc-area" style="font-size: 0.8rem; font-weight: bold;">
+		    <span id="cur-reinc-display">0転生(転生ボーナス0転生)</span>
+		</div>
+        </div>
+        
+        <div style="font-size:0.75rem; color:#555; margin-bottom:12px;">
+            変化アイテム: <span id="r-item-name">-</span> 
+            <span id="r-item-rarity-area" class="rarity-dots"></span>
+        </div>
+
+        <table class="status-table">
+            <thead>
+                <tr><th>Lv</th><th>S</th><th>A</th><th>D</th><th>L</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span id="disp-lv">1</span> / <span id="max-lv">-</span></td>
+                    <td><div id="cur-s">-</div><div class="stat-pt">(0pt)</div></td>
+                    <td><div id="cur-a">-</div><div class="stat-pt">(0pt)</div></td>
+                    <td><div id="cur-d">-</div><div class="stat-pt">(0pt)</div></td>
+                    <td><div id="cur-l">-</div><div class="stat-pt">(0pt)</div></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align:right; font-size:0.8rem; margin-bottom:10px;">
+            SP: <span id="remain-pt" style="color:#c0392b; font-weight:bold; font-size:1.1rem;">0</span>
+        </div>
+
+        <div class="control-container">
+            <div class="control-row">
+                <div class="control-label">Lv</div>
+                <div class="btn-group">
+                    <button class="btn-minus" onclick="changeVal('lv', -100)">-100</button>
+                    <button class="btn-minus" onclick="changeVal('lv', -10)">-10</button>
+                    <button class="btn-minus" onclick="changeVal('lv', -1)">-1</button>
+                    <button class="btn-plus" onclick="changeVal('lv', 1)">+1</button>
+                    <button class="btn-plus" onclick="changeVal('lv', 10)">+10</button>
+                    <button class="btn-plus" onclick="changeVal('lv', 100)">+100</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-label">S (Stamina)</div>
+                <div class="btn-group">
+                    <button class="btn-minus" onclick="changeVal('s', -100)">-100</button>
+                    <button class="btn-minus" onclick="changeVal('s', -10)">-10</button>
+                    <button class="btn-minus" onclick="changeVal('s', -1)">-1</button>
+                    <button class="btn-plus" onclick="changeVal('s', 1)">+1</button>
+                    <button class="btn-plus" onclick="changeVal('s', 10)">+10</button>
+                    <button class="btn-plus" onclick="changeVal('s', 100)">+100</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-label">A (Attack)</div>
+                <div class="btn-group">
+                    <button class="btn-minus" onclick="changeVal('a', -100)">-100</button>
+                    <button class="btn-minus" onclick="changeVal('a', -10)">-10</button>
+                    <button class="btn-minus" onclick="changeVal('a', -1)">-1</button>
+                    <button class="btn-plus" onclick="changeVal('a', 1)">+1</button>
+                    <button class="btn-plus" onclick="changeVal('a', 10)">+10</button>
+                    <button class="btn-plus" onclick="changeVal('a', 100)">+100</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-label">D (Defense)</div>
+                <div class="btn-group">
+                    <button class="btn-minus" onclick="changeVal('d', -100)">-100</button>
+                    <button class="btn-minus" onclick="changeVal('d', -10)">-10</button>
+                    <button class="btn-minus" onclick="changeVal('d', -1)">-1</button>
+                    <button class="btn-plus" onclick="changeVal('d', 1)">+1</button>
+                    <button class="btn-plus" onclick="changeVal('d', 10)">+10</button>
+                    <button class="btn-plus" onclick="changeVal('d', 100)">+100</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-label">L (Luck)</div>
+                <div class="btn-group">
+                    <button class="btn-minus" onclick="changeVal('l', -100)">-100</button>
+                    <button class="btn-minus" onclick="changeVal('l', -10)">-10</button>
+                    <button class="btn-minus" onclick="changeVal('l', -1)">-1</button>
+                    <button class="btn-plus" onclick="changeVal('l', 1)">+1</button>
+                    <button class="btn-plus" onclick="changeVal('l', 10)">+10</button>
+                    <button class="btn-plus" onclick="changeVal('l', 100)">+100</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>次に変化可能な幻獣</h2>
+        <div id="evolution-list" class="evolution-list"></div>
+    </section>
+
+<div class="accordion-container">
+    <details open>
+        <summary>変化履歴を確認</summary>
+        <div class="details-content">
+            <div id="history-list" style="max-height:150px; overflow-y:auto; font-size:0.75rem;"></div>
+        </div>
+    </details>
+<details>
+    <summary>ステータス読み込み</summary>
+    <div class="details-content" style="padding: 15px; box-sizing: border-box;">
+        <div class="input-list" style="display: flex; flex-direction: column; gap: 12px;">
+            
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">幻獣名</label>
+                <input type="text" id="manual-name" list="genjyu-names" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <datalist id="genjyu-names"></datalist>
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">LV</label>
+                <input type="number" id="manual-lv" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">S</label>
+                <input type="number" id="manual-s" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">A</label>
+                <input type="number" id="manual-a" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">D</label>
+                <input type="number" id="manual-d" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">L</label>
+                <input type="number" id="manual-l" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">StatusPoint</label>
+                <input type="number" id="manual-pt" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="input-item">
+                <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: var(--secondary-color);">転生回数</label>
+                <input type="number" id="manual-reinc" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+        </div>
+
+        <button onclick="applyManualInput()" style="width:100%; margin-top:20px; background:var(--accent-color); color:white; padding:12px; border:none; border-radius: 4px; cursor:pointer; font-weight:bold;">データを反映</button>
+    </div>
+</details>
+<details>
+    <summary>セーブ・ロード</summary>
+    <div class="details-content" style="padding: 15px; box-sizing: border-box;">
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px;">セーブスロット選択</label>
+            <select id="save-slot-select" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                <option value="1">スロット 1</option>
+                <option value="2">スロット 2</option>
+                <option value="3">スロット 3</option>
+                <option value="4">スロット 4</option>
+                <option value="5">スロット 5</option>
+                <option value="6">スロット 6</option>
+                <option value="7">スロット 7</option>
+                <option value="8">スロット 8</option>
+                <option value="9">スロット 9</option>
+                <option value="10">スロット 10</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button onclick="quickSave()" style="flex: 1; padding: 12px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">セーブ</button>
+            <button onclick="quickLoad()" style="flex: 1; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">ロード</button>
+        </div>
+    </div>
+</details>    </div>
+
+<footer style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.7rem; color: #777; line-height: 1.6;">
+    <p>【免責事項】当シミュレーターは個人が制作した非公式ツールです。計算結果の正確性については細心の注意を払っておりますが、ゲーム内での動作を保証するものではありません。本ツールを利用したことによる損害等について、制作者は一切の責任を負いません。</p>
+    <p style="text-align: center; margin-top: 10px; font-weight: bold;">(C)がじゅまる</p>
+</footer>
+
+<div style="margin: 30px auto; text-align: center; min-height: 100px;">
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4160264912778548"
+     crossorigin="anonymous"></script>
+-->
+<!-- シミュレータ用 -->
+<!--
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4160264912778548"
+     data-ad-slot="8278182248"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+    </div>
+
+<a href="index.html" style="text-decoration: none; color: #4a90e2;">← TOPに戻る</a>
+</div>
+
+<script src="genjyu_data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

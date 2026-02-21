@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻獣討伐シミュレータ v0.4.29</title>
+    <link rel="stylesheet" href="style.css">
+
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4160264912778548"
+     crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+
+<header class="project-header">
+    <a href="./" class="header-link">Index</a>
+    <button class="reset-btn" onclick="systemReset()">Reset</button>
+</header>
+
+<div class="container">
+    <section>
+        <div class="genjyu-header">
+            <div style="width: 100%;">
+                <label for="enemy-search" style="font-size: 0.9rem; font-weight: bold;">討伐対象を検索：</label>
+                <input type="text" id="enemy-search" list="enemy-names" placeholder="名前を入力または選択..." style="width: 60%; padding: 8px;">
+                <datalist id="enemy-names"></datalist>
+            </div>
+        </div>
+
+        <div style="margin: 10px 0; font-weight: bold;">
+            討伐対象<span id="selected-enemy-name" class="cur-name-text" style="font-size: 1.1rem;">---</span>
+        </div>
+
+        <table class="status-table">
+            <thead>
+                <tr><th>属性</th><th>S</th><th>A</th><th>D</th><th style="width: 30%;">アビリティ</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="enemy-type"><span class="badge">-</span></td>
+                    <td><input type="number" id="enemy-s" class="stat-input" placeholder="S"></td>
+                    <td><input type="number" id="enemy-a" class="stat-input" placeholder="A"></td>
+                    <td><input type="number" id="enemy-d" class="stat-input" placeholder="D"></td>
+                    <td id="enemy-ability" style="font-size:0.8rem;">-</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size:0.7rem; color:#777;">※数値は参考値です。適宜修正してください。また0=不明の可能性があります。</p>
+    </section>
+
+    <section>
+        <h2 style="margin-bottom: 10px;">編成</h2>
+        <div class="accordion-container" id="party-container">
+            
+            <details open class="unit-slot" id="unit-1">
+                <summary>
+                    <span style="margin-left: 10px;">1体目：</span><span class="display-unit-name">未設定</span>
+                    <label style="cursor: pointer;">(参加：<input type="checkbox" id="unit-join-1" class="unit-active" checked>)</label>
+                </summary>
+                <div class="unit-inner">
+                    <div style="margin-bottom:15px; display:flex; gap:10px; align-items:center; background: #f8f9fa; padding: 10px; border-radius: 4px;">
+                        <label style="font-size: 0.8rem; font-weight: bold;">登録名：</label>
+                        <select id="save-slot-1" class="save-slot-select" style="flex:1; padding: 5px;"><option value="">スロットを選択...</option></select>
+                        <button class="btn-plus" style="padding:5px 15px;">保存</button>
+                        <button class="btn-delete" style="padding:5px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">削除</button>
+                    </div>
+                    <div class="input-list">
+                        <div style="display:flex; gap:8px; margin-bottom: 10px;">
+                            <input type="text" id="manual-name-1" placeholder="幻獣名" class="manual-name" style="flex:2; padding: 8px;">
+                            <select id="manual-type-1" class="manual-type" style="flex:1;"><option value="1">獣</option><option value="2">魔</option><option value="3">霊</option><option value="4">無</option><option value="5">地</option><option value="6">龍</option></select>
+                        </div>
+                        <table class="status-table" style="margin-bottom: 15px;">
+                            <thead><tr><th></th><th>ステータス入力</th><th>装備込み実数値</th></tr></thead>
+                            <tbody>
+                                <tr><th>S</th><td><input type="number" id="base-s-1" class="base-s stat-input-wide" min="0" step="1"></td><td><span id="real-s-1" class="real-s-display">0</span></td></tr>
+                                <tr><th>A</th><td><input type="number" id="base-a-1" class="base-a stat-input-wide" min="0" step="1"></td><td><span id="real-a-1" class="real-a-display">0</span></td></tr>
+                                <tr><th>D</th><td><input type="number" id="base-d-1" class="base-d stat-input-wide" min="0" step="1"></td><td><span id="real-d-1" class="real-d-display">0</span></td></tr>
+                                <tr><th>L</th><td><input type="number" id="base-l-1" class="base-l stat-input-wide" min="0" step="1"></td><td><span id="real-l-1" class="real-l-display">0</span></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="equip-area" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="equip-row" style="display: flex; gap: 10px; align-items: flex-end;">
+                                <div style="flex: 1;"><label style="font-size: 0.7rem;">武器</label><input type="text" id="weapon-select-1" list="weapon-names" class="weapon-select" style="width: 100%; padding: 4px;" placeholder="武器検索..."></div>
+                                <div style="width: 70px;"><label style="font-size: 0.7rem;">強化</label><select id="weapon-plus-1" class="plus-val-select" style="width: 100%; padding: 4px;"></select></div>
+                            </div>
+                            <select id="weapon-ability-select-1" class="weapon-ability-select" style="width: 100%; padding: 4px;"><option value="">武器カード選択</option></select>
+                            <div class="equip-row" style="display: flex; gap: 10px; align-items: flex-end;">
+                                <div style="flex: 1;"><label style="font-size: 0.7rem;">防具</label><input type="text" id="armor-select-1" list="armor-names" class="armor-select" style="width: 100%; padding: 4px;" placeholder="防具検索..."></div>
+                                <div style="width: 70px;"><label style="font-size: 0.7rem;">強化</label><select id="armor-plus-1" class="plus-val-select" style="width: 100%; padding: 4px;"></select></div>
+                            </div>
+                            <select id="armor-ability-select-1" class="armor-ability-select" style="width: 100%; padding: 4px;"><option value="">防具カード選択</option></select>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details class="unit-slot" id="unit-2">
+                <summary>
+                    <span style="margin-left: 10px;">2体目：</span><span id="display-name-2" class="display-unit-name">未設定</span>
+                    <label style="cursor: pointer;">(参加：<input type="checkbox" id="unit-join-2" class="unit-active" checked>)</label>
+                </summary>
+                <div class="details-content" id="unit-inner-2"></div>
+            </details>
+
+            <details class="unit-slot" id="unit-3">
+                <summary>
+                    <span style="margin-left: 10px;">3体目：</span><span id="display-name-3" class="display-unit-name">未設定</span>
+                    <label style="cursor: pointer;">(参加：<input type="checkbox" id="unit-join-3" class="unit-active" checked>)</label>
+                </summary>
+                <div class="details-content" id="unit-inner-3"></div>
+            </details>
+
+            <details class="unit-slot" id="unit-4">
+                <summary>
+                    <span style="margin-left: 10px;">4体目：</span><span id="display-name-4" class="display-unit-name">未設定</span>
+                    <label style="cursor: pointer;">(参加：<input type="checkbox" id="unit-join-4" class="unit-active" checked>)</label>
+                </summary>
+                <div class="details-content" id="unit-inner-4"></div>
+            </details>
+
+        </div>
+    </section>
+
+    <section style="margin: 25px 0; display: flex; gap: 10px;">
+        <button onclick="runBattle(1)" style="flex:1; padding:15px; background:var(--accent-color); color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">討伐開始</button>
+        <button onclick="runBattle(1000)" style="flex:1; padding:15px; background:var(--accent-color); color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">1000回討伐</button>
+    </section>
+
+    <div id="battle-result-summary" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;"></div>
+
+    <section>
+        <div class="log-header">討伐ログ</div>
+        <div id="battle-log" class="log-window">
+            （ログがここに表示されます）
+        </div>
+    </section>
+
+
+<footer style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.7rem; color: #777; line-height: 1.6;">
+    <p>【免責事項】当シミュレーターは個人が制作した非公式ツールです。計算結果の正確性については細心の注意を払っておりますが、ゲーム内での動作を保証するものではありません。本ツールを利用したことによる損害等について、制作者は一切の責任を負いません。</p>
+    <p style="text-align: center; margin-top: 10px; font-weight: bold;">(C)がじゅまる</p>
+</footer>
+
+<div style="margin: 30px auto; text-align: center; min-height: 100px;">
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4160264912778548"
+     crossorigin="anonymous"></script>
+-->
+<!-- シミュレータ用 -->
+<!--
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4160264912778548"
+     data-ad-slot="8278182248"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+    </div>
+
+
+
+
+
+</div>
+
+
+
+<datalist id="enemy-names"></datalist>
+<datalist id="weapon-names"></datalist>
+<datalist id="armor-names"></datalist>
+
+<script src="item_data.js"></script>
+<script src="ability_data.js"></script>
+<script src="battle_data.js"></script>
+<script src="battle.js"></script>
+</body>
+</html>
