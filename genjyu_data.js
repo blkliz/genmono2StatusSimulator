@@ -964,7 +964,8 @@ const GENJYU_DATA = [
   { "genjyuId": 962, "genjyuName": "虚貌の騎士・デュラハン", "genjyuType": "魔", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30.9, "attackFactor": 16.25, "defenseFactor": 22.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "コシュタ・カパル", "eItemRarity": 7 }, "parentIds": [,916,], "variantIds": [] },
   { "genjyuId": 963, "genjyuName": "デカラビア", "genjyuType": "魔", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 42.8, "attackFactor": 12, "defenseFactor": 14.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "鉱奇ノ魔鳥", "eItemRarity": 6 }, "parentIds": [,174,298,], "variantIds": [] },
   { "genjyuId": 964, "genjyuName": "雪兎亭の銘華", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40.6, "attackFactor": 12.8, "defenseFactor": 23, "luckFactor": 1.4 }, "evolutionItem": { "eItemName": "雪うさ餡蜜", "eItemRarity": 7 }, "parentIds": [,110,415,752,], "variantIds": [] },
-  { "genjyuId": 965, "genjyuName": "ミス・ラ・ベリコ", "genjyuType": "獣", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 42, "attackFactor": 11, "defenseFactor": 11, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ラブランスメル", "eItemRarity": 5 }, "parentIds": [,769,], "variantIds": [] }
+  { "genjyuId": 965, "genjyuName": "ミス・ラ・ベリコ", "genjyuType": "獣", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 42, "attackFactor": 11, "defenseFactor": 11, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ラブランスメル", "eItemRarity": 5 }, "parentIds": [,769,], "variantIds": [] },
+  { "genjyuId": 966, "genjyuName": "星ノ位・プロキオン", "genjyuType": "魔", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 33.3, "attackFactor": 16.25, "defenseFactor": 22.1, "luckFactor": 2 }, "evolutionItem": { "eItemName": "闇夜照らす鉤撃", "eItemRarity": 7 }, "parentIds": [,243,489,], "variantIds": [] },
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
 //前回更新時の末尾にカンマないことも注意。
