@@ -89,7 +89,8 @@ const weapons = [
   { name: 'フルールロッド', abi: '爽活', atk: 120, grade: 7, kind: 1 },
   { name: '天啓の聖鐘', abi: '福音', atk: 120, grade: 10, kind: 1 },
   { name: '交信石', abi: '福音', atk: 25, grade: 5, kind: 1 },
-  { name: '照吉丸', abi: '天晴', atk: 80, grade: 10, kind: 1 }
+  { name: '照吉丸', abi: '天晴', atk: 80, grade: 10, kind: 1 },
+  { name: 'ブラッディローズ', abi: '紅舞', atk: 780, grade: 10, kind: 1 }
 
 ];
 
