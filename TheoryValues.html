@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>理論値一覧表 v1.2</title>
     <link rel="stylesheet" href="style.css">
     <style>
@@ -34,7 +35,7 @@
 <body>
     <header class="project-header">
         <a href="./index.html" class="header-link">Index</a>
-        <div style="font-weight: bold;">理論値ブラウザ v1.2</div>
+        <div style="font-weight: bold;">理論値一覧表 v1.2</div>
     </header>
 
     <div class="container">
@@ -61,8 +62,8 @@
                         <option value="">全属性</option>
                     </select>
         </div>
-
-<table class="theory-table">
+        <div class="table-container">
+        <table class="theory-table">
             <thead>
                 <tr>
                     <th rowspan="2" onclick="setSort('id')">No</th>
@@ -83,6 +84,7 @@
             </thead>
             <tbody id="table-body"></tbody>
         </table>
+    </div>
     </div>
 
     <div id="route-modal" onclick="closeModal()">

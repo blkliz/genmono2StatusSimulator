@@ -226,3 +226,64 @@ details[open] summary::before { content: "▼ "; }
     width: 100%;
 }
 
+/* --- テーブル枠固定の設定 --- */
+
+/* コンテナに横スクロールを許可 */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* テーブルが縮まないよう最小幅を確保 */
+.theory-table {
+    min-width: 1000px; /* 列が増えたので少し広めに確保 */
+    border-collapse: separate; /* stickyを効かせるために必要 */
+    border-spacing: 0;
+}
+
+/* 共通：固定列の背景色（透け防止） */
+.theory-table th, 
+.theory-table td {
+    background-color: #fff;
+}
+
+/* 1列目(No)の固定 */
+.theory-table th:nth-child(1),
+.theory-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    min-width: 40px;
+    max-width: 40px;
+    border-right: 1px solid #ccc;
+}
+
+/* 2列目(幻獣名)の固定 */
+.theory-table th:nth-child(2),
+.theory-table td:nth-child(2) {
+    position: sticky;
+    left: 40px; /* 1列目の幅(40px)に合わせる */
+    z-index: 10;
+    min-width: 140px;
+    border-right: 2px solid #5a6d7a; /* 境界を強調 */
+}
+
+/* ヘッダー部分はスクロール時に最前面へ */
+.theory-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #5a6d7a;
+}
+
+/* Noと幻獣名のヘッダー角部分は最高優先度 */
+.theory-table thead tr:nth-child(1) th:nth-child(1),
+.theory-table thead tr:nth-child(1) th:nth-child(2) {
+    z-index: 30;
+}
+
+/* 偶数行の背景色（固定列にも適用して縞々を維持） */
+.theory-table tr:nth-child(even) td {
+    background-color: #f9f9f9;
+}
