@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>理論値一覧表 v1.2</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container { max-width: 1250px; }
+        .mode-selector { display: flex; gap: 5px; margin-bottom: 15px; }
+        .mode-selector button { flex: 1; font-weight: bold; cursor: pointer; padding: 10px; }
+        .active-mode { background: #4a5d6a !important; color: white !important; }
+        
+        .theory-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; background: #fff; }
+        .theory-table th { background: #5a6d7a; color: #fff; padding: 5px; cursor: pointer; border: 1px solid #ccc; }
+        .theory-table td { border: 1px solid #ddd; padding: 4px; text-align: center; }
+        
+        .val-cell { font-family: "Garamond", serif; font-weight: bold; font-size: 1.1rem; }
+        .pt-this { color: #2c3e50; font-weight: bold; background: #f0f4f8; } 
+        .pt-total { color: #7f8c8d; font-size: 0.7rem; } 
+        .highlight { background: #fff9e6 !important; }
+        
+        .route-btn { padding: 2px 8px; font-size: 0.7rem; cursor: pointer; }
+
+        /* 追加：検索・フィルタ用スタイル */
+        .filter-controls { margin-bottom: 10px; display: flex; gap: 10px; }
+        .filter-controls input, .filter-controls select { padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+
+        /* 追加：モーダル用スタイル */
+        #route-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; }
+        .modal-body { background:#fff; width:90%; max-width:500px; margin:100px auto; padding:20px; border-radius:8px; position:relative; }
+        .modal-close { position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.5rem; }
+    </style>
+</head>
+<body>
+    <header class="project-header">
+        <a href="./index.html" class="header-link">Index</a>
+        <div style="font-weight: bold;">理論値ブラウザ v1.2</div>
+    </header>
+
+    <div class="container">
+        <div class="mode-selector">
+            <button id="btn-s" onclick="changeTarget('s')">S極</button>
+            <button id="btn-a" onclick="changeTarget('a')">A極</button>
+            <button id="btn-d" onclick="changeTarget('d')">D極</button>
+            <button id="btn-l" onclick="changeTarget('l')">L極</button>
+        </div>
+
+        <div class="filter-controls">
+            <input type="text" id="search-name" placeholder="幻獣名で検索..." oninput="render()">
+            <select id="filter-class" onchange="render()">
+                <option value="">全クラス</option>
+                <option value="SS">SS</option>
+                <option value="S">S</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="F">F</option>
+            </select>
+                    <select id="filter-type" onchange="render()">
+                        <option value="">全属性</option>
+                    </select>
+        </div>
+
+<table class="theory-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" onclick="setSort('id')">No</th>
+                    <th rowspan="2" onclick="setSort('name')">幻獣名</th>
+                    <th rowspan="2" onclick="setSort('class')">クラス</th>
+                    <th rowspan="2" onclick="setSort('type')">属性</th> <th colspan="3">S</th>
+                    <th colspan="3">A</th>
+                    <th colspan="3">D</th>
+                    <th colspan="3">L</th>
+                    <th rowspan="2">詳細</th>
+                </tr>
+                <tr>
+                    <th onclick="setSort('s')">実数</th><th onclick="setSort('s_this')">当世</th><th onclick="setSort('s_total')">総Pt</th>
+                    <th onclick="setSort('a')">実数</th><th onclick="setSort('a_this')">当世</th><th onclick="setSort('a_total')">総Pt</th>
+                    <th onclick="setSort('d')">実数</th><th onclick="setSort('d_this')">当世</th><th onclick="setSort('d_total')">総Pt</th>
+                    <th onclick="setSort('l')">実数</th><th onclick="setSort('l_this')">当世</th><th onclick="setSort('l_total')">総Pt</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <div id="route-modal" onclick="closeModal()">
+        <div class="modal-body" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title" style="margin-top:0;"></h3>
+            <div id="modal-content"></div> 
+            <button onclick="closeModal()" style="margin-top: 20px;">閉じる</button>
+        </div>
+    </div>
+
+    <script src="genjyu_data.js"></script>
+    <script src="theory_calc.js"></script>
+</body>
+</html>
