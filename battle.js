@@ -513,7 +513,7 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
                 allUnits.forEach(u => {
                     if (!u.isDead) {
                         let c = getComp(u.attr, enemy.attr);
-                        val = Math.ceil(val * c);
+                        val = val * c;
                         resObj.debugInfo += `×味${u.id}:${c}`;
                     }
                 });
