@@ -697,11 +697,19 @@ function runBattle(count) {
                     battleSummary += `<small style="color:#888">${resU.debugInfo}</small><br>`;
                     battleSummary += `&nbsp;&nbsp;反撃: ${simpleEnemyName}${resU.abi ? 'の' + resU.abi : ''}: ${u.name}に${resU.dmg}(残り:${Math.max(0, u.s)})<br>`;
                 }
-                if (u.s <= 0) { 
+                if (u.s <= 0) {
                     u.s = 0; u.isDead = true; 
-                    if (units.every(un => un.isDead)) { endReason = "全滅"; break battleLoop; }
                 }
-                if (currentTurn >= limit) { endReason = "ターンオーバー"; break battleLoop; }
+                // 1. まず全滅を判定（反撃の結果、全員死んだなら全滅優先）
+                if (units.every(un => un.isDead)) { 
+                    endReason = "全滅"; 
+                    break battleLoop; 
+                }
+                // 2. 生き残っているが、規定ターンに達したならターンオーバー
+                if (currentTurn >= limit) { 
+                    endReason = "ターンオーバー"; 
+                    break battleLoop; 
+                }
             }
         }
 
