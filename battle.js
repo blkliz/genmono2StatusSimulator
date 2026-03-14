@@ -728,3 +728,61 @@ function runBattle(count) {
 }
 
 function systemReset() { if (confirm("入力をリセットしますか？")) location.reload(); }
+
+function exportToFile() {
+    const allData = {};
+    // LocalStorage内を走査して、このアプリのデータだけを抽出
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("bs_genjyu_savedata_")) {
+            allData[key] = localStorage.getItem(key);
+        }
+    }
+
+    if (Object.keys(allData).length === 0) return alert("保存されているデータがありません。");
+
+    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `genjyu_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+}
+
+function importFromFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            let overwriteCount = 0;
+
+            // 同名チェック
+            for (const key in importedData) {
+                if (localStorage.getItem(key)) overwriteCount++;
+            }
+
+            if (overwriteCount > 0) {
+                if (!confirm(`${overwriteCount}件の同名データが既に存在します。上書きしますか？`)) {
+                    input.value = ""; // リセット
+                    return;
+                }
+            }
+
+            // 保存処理
+            for (const key in importedData) {
+                localStorage.setItem(key, importedData[key]);
+            }
+
+            // UIのセレクトボックスを更新
+            for (let i = 1; i <= 4; i++) updateLoadSelect(i);
+            
+            alert("読み込みが完了しました。");
+            input.value = ""; // リセット
+        } catch (err) {
+            alert("ファイルの形式が正しくありません。");
+        }
+    };
+    reader.readAsText(file);
+}

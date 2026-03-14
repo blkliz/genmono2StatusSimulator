@@ -12,7 +12,7 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幻獣討伐シミュレータ v0.4.31</title>
+    <title>幻獣討伐シミュレータ v0.4.32</title>
     <link rel="stylesheet" href="style.css">
 
 <!--
@@ -144,6 +144,13 @@
             （ログがここに表示されます）
         </div>
     </section>
+
+<div style="margin-top: 10px; border-top: 1px solid #ccc; padding-top: 10px;">
+    ◆スロットの全幻獣データをファイルに保存/読み込み<br>
+    <button type="button" onclick="exportToFile()">全幻獣データをファイルに保存</button>
+    <input type="file" id="import-file" style="display:none" onchange="importFromFile(this)">
+    <button type="button" onclick="document.getElementById('import-file').click()">ファイルから読み込み</button>
+</div>
 
 
 <footer style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.7rem; color: #777; line-height: 1.6;">
