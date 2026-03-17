@@ -968,7 +968,8 @@ const GENJYU_DATA = [
   { "genjyuId": 966, "genjyuName": "星ノ位・プロキオン", "genjyuType": "魔", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 33.3, "attackFactor": 16.25, "defenseFactor": 22.1, "luckFactor": 2 }, "evolutionItem": { "eItemName": "闇夜照らす鉤撃", "eItemRarity": 7 }, "parentIds": [,243,489,], "variantIds": [] },
   { "genjyuId": 967, "genjyuName": "ケサランパサラン", "genjyuType": "霊", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 29, "attackFactor": 14, "defenseFactor": 12.9, "luckFactor": 1.6 }, "evolutionItem": { "eItemName": "知らずの白粉", "eItemRarity": 6 }, "parentIds": [,262,], "variantIds": [] },
   { "genjyuId": 968, "genjyuName": "武侯諸葛孔明", "genjyuType": "龍", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 51.4, "attackFactor": 13.8, "defenseFactor": 17.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "臥龍の天灯", "eItemRarity": 7 }, "parentIds": [,696,], "variantIds": [] },
-    { "genjyuId": 969, "genjyuName": "配達員バリー", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 29.3, "attackFactor": 11, "defenseFactor": 9.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "栗色封蝋", "eItemRarity": 4 }, "parentIds": [,763,], "variantIds": [] }
+    { "genjyuId": 969, "genjyuName": "配達員バリー", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 29.3, "attackFactor": 11, "defenseFactor": 9.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "栗色封蝋", "eItemRarity": 4 }, "parentIds": [,763,], "variantIds": [] },
+      { "genjyuId": 970, "genjyuName": "灰咲の花匠", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 37.95, "attackFactor": 11.8, "defenseFactor": 14.55, "luckFactor": 1 }, "evolutionItem": { "eItemName": "香咽堂・霞桜", "eItemRarity": 6 }, "parentIds": [,849,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
