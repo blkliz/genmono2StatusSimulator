@@ -971,7 +971,8 @@ const GENJYU_DATA = [
   { "genjyuId": 969, "genjyuName": "配達員バリー", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 29.3, "attackFactor": 11, "defenseFactor": 9.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "栗色封蝋", "eItemRarity": 4 }, "parentIds": [,763,], "variantIds": [] },
   { "genjyuId": 970, "genjyuName": "灰咲の花匠", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 37.95, "attackFactor": 11.8, "defenseFactor": 14.55, "luckFactor": 1 }, "evolutionItem": { "eItemName": "香咽堂・霞桜", "eItemRarity": 6 }, "parentIds": [,849,], "variantIds": [] },
   { "genjyuId": 971, "genjyuName": "海診のメディーカ", "genjyuType": "霊", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 27.3, "attackFactor": 11, "defenseFactor": 12.7, "luckFactor": 1 }, "evolutionItem": { "eItemName": "クラムカルテ", "eItemRarity": 4 }, "parentIds": [,501,], "variantIds": [] },
-  { "genjyuId": 972, "genjyuName": "揺籃のベルシーニュ", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 53.3, "attackFactor": 12.7, "defenseFactor": 18.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "勿忘の天蓋", "eItemRarity": 7 }, "parentIds": [,854,], "variantIds": [] }
+  { "genjyuId": 972, "genjyuName": "揺籃のベルシーニュ", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 53.3, "attackFactor": 12.7, "defenseFactor": 18.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "勿忘の天蓋", "eItemRarity": 7 }, "parentIds": [,854,], "variantIds": [] },
+    { "genjyuId": 973, "genjyuName": "グラスィオ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40, "attackFactor": 20.8, "defenseFactor": 12.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "パンセ・ブーケ", "eItemRarity": 7 }, "parentIds": [,499,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
