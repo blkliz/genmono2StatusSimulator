@@ -35,11 +35,8 @@ function getMaxPathBonus(genjyuId, type) {
     if (!genjyu) return { pt: 0, path: [] };
 
     const thisBonus = calculateSingleBonus(genjyu, type);
-    // 自身の情報をノードとして定義
-// 自身の情報をノードとして定義
     const thisNode = { 
         name: genjyu.genjyuName, 
-        // genjyu.evolutionItem が存在する場合のみ、その中の eItemName を取得する
         item: (genjyu.evolutionItem && genjyu.evolutionItem.eItemName) ? genjyu.evolutionItem.eItemName : "-" 
     };
 
@@ -47,39 +44,50 @@ function getMaxPathBonus(genjyuId, type) {
         return { pt: 0, path: [thisNode] };
     }
 
-let bestParent = { pt: 0, path: [] };
+    let bestParent = { pt: 0, path: [] };
     genjyu.parentIds.forEach(pId => {
         if (pId !== null && pId !== undefined) {
             const res = getMaxPathBonus(pId, type);
             
-            // 1. 理論値が純粋に高い場合は、文句なしに更新
             const isBetterPt = res.pt > bestParent.pt;
-
-            // 2. 同値の場合の判定
             const isSamePt = (res.pt === bestParent.pt && res.pt > 0);
             
-            // 暫定ベストが季節モノ（【あり）か判定
+            // --- ここから追加：同値の時のサブステータス比較 ---
+            let isBetterSub = false;
+            if (isSamePt) {
+                const subTypes = ['s', 'a', 'd'].filter(t => t !== type);
+                const getScore = (p) => {
+                    return p.path.reduce((sum, node) => {
+                        const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                        if (!gx) return sum;
+                        return sum + subTypes.reduce((s, t) => s + calculateSingleBonus(gx, t), 0);
+                    }, 0);
+                };
+                isBetterSub = getScore(res) > getScore(bestParent);
+            }
+            // --- ここまで追加 ---
+
             const bestIsVariant = bestParent.path.length > 0 && 
                                   bestParent.path[bestParent.path.length - 1].name.includes("【");
             
-            // 新しい候補がオリジナル（【なし）か判定
             const resIsOriginal = res.path.length > 0 && 
                                  !res.path[res.path.length - 1].name.includes("【");
 
-            // 更新条件：
-            // A. 新しい候補の方がポイントが高い
-            // B. ポイントが同じで、かつ「今のベストが季節モノ」かつ「新しい候補がオリジナル」の時だけ入れ替える
-            if (isBetterPt || (isSamePt && bestIsVariant && resIsOriginal)) {
+            // 更新条件に isBetterSub を追加
+            // A. 純粋に高い
+            // B. 同値で、かつサブステータス(A+D)が高い
+            // C. 同値かつサブも同値（または低い）が、今のベストが季節モノで新しいのがオリジナル
+            if (isBetterPt || 
+               (isSamePt && isBetterSub) || 
+               (isSamePt && !isBetterSub && bestIsVariant && resIsOriginal)) {
                 bestParent = res;
             }
-            // ※「同値で両方オリジナル」「同値で新しい方が季節モノ」などの場合は、
-            //    条件に合致しないため、最初に見つけたオリジナル（または先にいた方）が維持されます。
         }
     });
 
     const result = {
         pt: thisBonus + bestParent.pt,
-        path: [...bestParent.path, thisNode] // オブジェクトの配列を構築
+        path: [...bestParent.path, thisNode]
     };
     memoPathBonus[cacheKey] = result;
     return result;
@@ -127,11 +135,30 @@ function render() {
     const filterClass = document.getElementById('filter-class').value;
     const filterType = document.getElementById('filter-type').value; 
     
-    const globalMax = {
-        s: findGlobalMaxPathBonus('s'),
-        a: findGlobalMaxPathBonus('a'),
-        d: findGlobalMaxPathBonus('d')
-    };
+    // 1. 現在の「極 (currentTarget)」において、全幻獣の中で最も高い当世ptを持つ個体を特定
+    // (例: S極なら、Sptが最大となる王盛ノームなどの情報を取得)
+    let maxGenjyuForTarget = null;
+    let maxTargetPt = -1;
+
+    GENJYU_DATA.forEach(g => {
+        const res = getMaxPathBonus(g.genjyuId, currentTarget);
+        if (res.pt > maxTargetPt) {
+            maxTargetPt = res.pt;
+            maxGenjyuForTarget = g;
+        }
+    });
+
+    // 2. その「極の王」が各ステータスで持っている当世ptを算出。これを転生繰り越しのベースにする
+    const basePointsForCarryOver = { s: 0, a: 0, d: 0 };
+    if (maxGenjyuForTarget) {
+        const kingRoute = getMaxPathBonus(maxGenjyuForTarget.genjyuId, currentTarget);
+        ['s', 'a', 'd'].forEach(t => {
+            basePointsForCarryOver[t] = kingRoute.path.reduce((sum, node) => {
+                const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                return sum + (gx ? calculateSingleBonus(gx, t) : 0);
+            }, 0);
+        });
+    }
 
     let list = GENJYU_DATA.filter(g => g.genjyuId > 1).map(g => {
         const sm = g.statusMultipliers;
@@ -143,20 +170,42 @@ function render() {
             routePaths: {} 
         };
 
+        // 3. この幻獣の「現在の極」におけるルートを一本に固定
+        const fixedRoute = getMaxPathBonus(g.genjyuId, currentTarget);
+
         ['s', 'a', 'd', 'l'].forEach(type => {
             const isTarget = (type === currentTarget);
-            const pathInfo = getMaxPathBonus(g.genjyuId, type);
-            const totalPt = calcTheoryPt(globalMax[type] || 0, pathInfo.pt, isTarget);
-            const fKey = type==='s'?'staminaFactor':type==='a'?'attackFactor':type==='d'?'defenseFactor':'luckFactor';
             
+            let pathPt = 0;
+            if (type === 'l') {
+                pathPt = 0;
+            } else if (isTarget) {
+                pathPt = fixedRoute.pt;
+            } else {
+                // 固定されたルート上の他ステータスptを再集計
+                pathPt = fixedRoute.path.reduce((sum, node) => {
+                    const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                    return sum + (gx ? calculateSingleBonus(gx, type) : 0);
+                }, 0);
+            }
+
+            // 4. 前世として「極の王」の該当ステータスpt（basePointsForCarryOver）を渡して算出
+            const totalPt = calcTheoryPt(
+                basePointsForCarryOver[type] || 0, 
+                pathPt, 
+                isTarget
+            );
+            
+            const fKey = type==='s'?'staminaFactor':type==='a'?'attackFactor':type==='d'?'defenseFactor':'luckFactor';
             res[type] = getFinalStatus(totalPt, sm[fKey]);
-            res[type + '_this'] = pathInfo.pt;
+            res[type + '_this'] = pathPt;
             res[type + '_total'] = totalPt;
-            res.routePaths[type] = pathInfo.path;
+            res.routePaths[type] = fixedRoute.path;
         });
         return res;
     });
 
+    // --- フィルタ・ソート・描画処理 (変更なし) ---
     list = list.filter(g => {
         return g.name.toLowerCase().includes(searchName) && 
                (!filterClass || g.class === filterClass) &&
