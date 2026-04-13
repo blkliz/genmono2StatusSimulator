@@ -330,9 +330,6 @@ function openDetailModal(genjyuId) {
     const genjyu = GENJYU_DATA.find(g => g.genjyuId === genjyuId);
     if (!genjyu) return;
 
-    // --- 追加：検証モードの徹底 ---
-    // 計算前に一度キャッシュをクリアし、現在のターゲットに基づいた
-    // 正しい getMaxPathBonus の計算を保証します
     memoPathBonus = {};
 
     const modal = document.getElementById('route-modal');
@@ -351,17 +348,13 @@ function openDetailModal(genjyuId) {
             let pathPt = 0;
             if (type !== 'l') {
                 pathPt = path.reduce((sum, node) => {
-    // 「生まれ変わる者」はボーナス計算の対象外（常に0）にする
-    if (node.name === "生まれ変わる者") return sum;
-
-    const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
-    return sum + (gx ? calculateSingleBonus(gx, type) : 0);
-}, 0);
+                    if (node.name === "生まれ変わる者") return sum;
+                    const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                    return sum + (gx ? calculateSingleBonus(gx, type) : 0);
+                }, 0);
             }
 
-            // グローバルの basePointsForCarryOver を使用（renderと同期）
             const totalPt = calcTheoryPt(basePointsForCarryOver[type] || 0, pathPt, isTarget);
-
             const fKey = type==='s'?'staminaFactor':type==='a'?'attackFactor':type==='d'?'defenseFactor':'luckFactor';
             rowData[type] = getFinalStatus(totalPt, sm[fKey]);
             rowData[type + '_this'] = pathPt;
@@ -370,22 +363,50 @@ function openDetailModal(genjyuId) {
         return rowData;
     });
 
-    // 数値が同じルートが複数あれば、ここで全て表示されます（多様性の維持）
     variantList.sort((a, b) => {
         if (b[currentTarget] !== a[currentTarget]) return b[currentTarget] - a[currentTarget];
         return (b.a + b.d + b.s) - (a.a + a.d + a.s);
     });
 
-    let html = `
+// --- ソートは維持 ---
+    if (variantList && variantList.length > 1) {
+        variantList.sort((a, b) => {
+            const pathA = a.path || [];
+            const pathB = b.path || [];
+            const maxLen = Math.max(pathA.length, pathB.length);
+            for (let i = 0; i < maxLen; i++) {
+                const nameA = pathA[i] ? String(pathA[i].name || "").trim() : "";
+                const nameB = pathB[i] ? String(pathB[i].name || "").trim() : "";
+                if (nameA !== nameB) return nameA.localeCompare(nameB, 'ja');
+            }
+            return 0;
+        });
+    }
+
+    // --- 要約せず、全行程を summary に叩き込む ---
+    variantList.forEach((v, i) => {
+        if (v.path && Array.isArray(v.path)) {
+            // 全ての幻獣名を「 ＞ 」で繋いだだけのフルパスを作る
+            v.summary = v.path.map(p => String(p.name || "").trim()).join(' ＞ ');
+        } else {
+            v.summary = "ルート情報なし";
+        }
+        console.log(`ルート${i} パス確定: ${v.summary}`);
+    });
+
+//ここまで追加
+
+
+let html = `
         <div style="margin-bottom: 15px;">
             <button onclick="closeModal()" style="padding: 5px 15px; cursor: pointer;">閉じる</button>
         </div>
         <div style="overflow-x: auto; width: 100%; max-width: 100%;">
-            <table class="modal-table">
+            <table class="modal-table" style="table-layout: fixed; width: 100%; min-width: 800px;">
                 <thead>
                     <tr>
-                        <th rowspan="2">候補</th>
-                        <th colspan="3">Stamina</th><th colspan="3">Attack</th><th colspan="3">Defense</th><th colspan="3">Luck</th><th rowspan="2">Route</th>
+                        <th rowspan="2" style="width: 50px;">候補</th>
+                        <th colspan="3">Stamina</th><th colspan="3">Attack</th><th colspan="3">Defense</th><th colspan="3">Luck</th><th rowspan="2" style="width: 60px;">Route</th>
                     </tr>
                     <tr>
                         <th>実数値</th><th>Spt</th><th>計</th><th>実数値</th><th>Apt</th><th>計</th><th>実数値</th><th>Dpt</th><th>計</th><th>実数値</th><th>Lpt</th><th>計</th>
@@ -394,12 +415,21 @@ function openDetailModal(genjyuId) {
                 <tbody>
                     ${variantList.map((v, i) => `
                         <tr>
-                            <td>${i + 1}</td>
+                            <td style="background: #f0f0f0; font-weight: bold; text-align: center;">${i + 1}</td>
                             <td style="font-weight:bold; background:#fffcf0;">${v.s}</td><td>${v.s_this}</td><td>${v.s_total}</td>
                             <td style="font-weight:bold; background:#fffcf0;">${v.a}</td><td>${v.a_this}</td><td>${v.a_total}</td>
                             <td style="font-weight:bold; background:#fffcf0;">${v.d}</td><td>${v.d_this}</td><td>${v.d_total}</td>
                             <td style="font-weight:bold; background:#fffcf0;">${v.l}</td><td>${v.l_this}</td><td>${v.l_total}</td>
-                            <td><button class="route-btn" onclick='openRouteFromDetail("${genjyu.genjyuName}", "${currentTarget}", ${JSON.stringify(v.path).replace(/"/g, '&quot;')})'>R</button></td>
+                            <td style="text-align: center;">
+                                <button class="route-btn" onclick='openRouteFromDetail("${genjyu.genjyuName}", "${currentTarget}", ${JSON.stringify(v.path).replace(/"/g, '&quot;')})'>R</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="14" style="background: #ffffff; padding: 6px 12px; border-bottom: 2px solid #ccc;">
+                                <div style="width: 100%; max-width: calc(100vw - 60px); color: #555; font-size: 0.75rem; line-height: 1.5; word-wrap: break-word; white-space: normal;">
+                                    ${v.summary}
+                                </div>
+                            </td>
                         </tr>
                     `).join('')}
                 </tbody>
