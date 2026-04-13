@@ -1,5 +1,5 @@
 /**
- * theory_calc.js - 理論値計算エンジン v1.7
+ * theory_calc.js - 理論値計算エンジン v0.1.9
  */
 
 let currentTarget = 'a';
@@ -9,9 +9,56 @@ const LV_SP = 498;
 const TRANS_BONUS = 110; 
 
 let memoPathBonus = {};
+let memoDetailPaths = {};
 let basePointsForCarryOver = { s: 0, a: 0, d: 0 };
+let genjyuById = null;
+let genjyuByName = null;
 
 let modalHistory = ""; // 履歴保存用
+
+function ensureGenjyuIndex() {
+    if (genjyuById && genjyuByName) return;
+    genjyuById = new Map();
+    genjyuByName = new Map();
+    GENJYU_DATA.forEach(g => {
+        genjyuById.set(g.genjyuId, g);
+        genjyuByName.set(g.genjyuName, g);
+    });
+}
+
+function getGenjyuById(id) {
+    ensureGenjyuIndex();
+    return genjyuById.get(id);
+}
+
+function getGenjyuByName(name) {
+    ensureGenjyuIndex();
+    return genjyuByName.get(name);
+}
+
+function getNodeGenjyu(node) {
+    if (node && node.id !== undefined && node.id !== null) return getGenjyuById(node.id);
+    return getGenjyuByName(node ? node.name : "");
+}
+
+function sumPathBonus(path, type) {
+    return path.reduce((sum, node) => {
+        const gx = getNodeGenjyu(node);
+        return sum + (gx ? calculateSingleBonus(gx, type) : 0);
+    }, 0);
+}
+
+function comparePathLex(pathA, pathB) {
+    const maxLen = Math.max(pathA.length, pathB.length);
+    for (let i = 0; i < maxLen; i++) {
+        const nameA = pathA[i] ? String(pathA[i].name || "").trim() : "";
+        const nameB = pathB[i] ? String(pathB[i].name || "").trim() : "";
+        if (nameA !== nameB) {
+            return nameA.localeCompare(nameB, 'ja', { numeric: true });
+        }
+    }
+    return pathA.length - pathB.length;
+}
 
 function getFinalStatus(pt, factor) {
     return Math.floor(Math.floor(pt * (factor * 10)) / 10);
@@ -34,11 +81,12 @@ function getMaxPathBonus(genjyuId, type) {
     const cacheKey = `${genjyuId}-${type}`;
     if (memoPathBonus[cacheKey] !== undefined) return memoPathBonus[cacheKey];
 
-    const genjyu = GENJYU_DATA.find(g => g.genjyuId === genjyuId);
+    const genjyu = getGenjyuById(genjyuId);
     if (!genjyu) return { pt: 0, path: [] };
 
     const thisBonus = calculateSingleBonus(genjyu, type);
     const thisNode = { 
+        id: genjyu.genjyuId,
         name: genjyu.genjyuName, 
         item: (genjyu.evolutionItem && genjyu.evolutionItem.eItemName) ? genjyu.evolutionItem.eItemName : "-" 
     };
@@ -61,7 +109,7 @@ function getMaxPathBonus(genjyuId, type) {
                 const subTypes = ['s', 'a', 'd'].filter(t => t !== type);
                 const getScore = (p) => {
                     return p.path.reduce((sum, node) => {
-                        const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                        const gx = getNodeGenjyu(node);
                         if (!gx) return sum;
                         return sum + subTypes.reduce((s, t) => s + calculateSingleBonus(gx, t), 0);
                     }, 0);
@@ -111,11 +159,15 @@ function findGlobalMaxPathBonus(type) {
  * 一覧の理論値(getMaxPathBonus)を「目標値」として、その値に到達する全ルートを正しく探索する
  */
 function getDetailPathVariants(genjyuId, type) {
-    const genjyu = GENJYU_DATA.find(g => g.genjyuId === genjyuId);
+    const detailCacheKey = `${genjyuId}-${type}`;
+    if (memoDetailPaths[detailCacheKey] !== undefined) return memoDetailPaths[detailCacheKey];
+
+    const genjyu = getGenjyuById(genjyuId);
     if (!genjyu || type === 'l') return { paths: [[]] };
 
     const thisBonus = calculateSingleBonus(genjyu, type);
     const thisNode = { 
+        id: genjyu.genjyuId,
         name: genjyu.genjyuName, 
         item: (genjyu.evolutionItem && genjyu.evolutionItem.eItemName) ? genjyu.evolutionItem.eItemName : "-" 
     };
@@ -125,7 +177,9 @@ function getDetailPathVariants(genjyuId, type) {
 
     // 2. 終着点（親なし）の場合
     if (!genjyu.parentIds || genjyu.parentIds.length === 0) {
-        return { paths: [[thisNode]] };
+        const baseResult = { paths: [[thisNode]] };
+        memoDetailPaths[detailCacheKey] = baseResult;
+        return baseResult;
     }
 
     // 3. 親を探索
@@ -151,7 +205,9 @@ function getDetailPathVariants(genjyuId, type) {
         allPaths = [[thisNode]];
     }
 
-    return { paths: allPaths };
+    const result = { paths: allPaths };
+    memoDetailPaths[detailCacheKey] = result;
+    return result;
 }
 
 function calcTheoryPt(routeBonus, finalPathBonus, isTarget) {
@@ -178,7 +234,8 @@ function updateTypeFilterOptions() {
 }
 
 function render() {
-    memoPathBonus = {}; 
+    memoPathBonus = {};
+    memoDetailPaths = {};
     const tbody = document.getElementById('table-body');
     if (!tbody) return;
 
@@ -204,10 +261,7 @@ function render() {
     if (maxGenjyuForTarget) {
         const kingRoute = getMaxPathBonus(maxGenjyuForTarget.genjyuId, currentTarget);
         ['s', 'a', 'd'].forEach(t => {
-            basePointsForCarryOver[t] = kingRoute.path.reduce((sum, node) => {
-                const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
-                return sum + (gx ? calculateSingleBonus(gx, t) : 0);
-            }, 0);
+            basePointsForCarryOver[t] = sumPathBonus(kingRoute.path, t);
         });
     }
 
@@ -234,10 +288,7 @@ function render() {
                 pathPt = fixedRoute.pt;
             } else {
                 // 固定されたルート上の他ステータスptを再集計
-                pathPt = fixedRoute.path.reduce((sum, node) => {
-                    const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
-                    return sum + (gx ? calculateSingleBonus(gx, type) : 0);
-                }, 0);
+                pathPt = sumPathBonus(fixedRoute.path, type);
             }
 
             // 4. 前世として「極の王」の該当ステータスpt（basePointsForCarryOver）を渡して算出
@@ -327,10 +378,11 @@ function openRouteModal(name, type, pathArray) {
 }
 
 function openDetailModal(genjyuId) {
-    const genjyu = GENJYU_DATA.find(g => g.genjyuId === genjyuId);
+    const genjyu = getGenjyuById(genjyuId);
     if (!genjyu) return;
 
     memoPathBonus = {};
+    memoDetailPaths = {};
 
     const modal = document.getElementById('route-modal');
     const content = document.getElementById('modal-content');
@@ -349,7 +401,7 @@ function openDetailModal(genjyuId) {
             if (type !== 'l') {
                 pathPt = path.reduce((sum, node) => {
                     if (node.name === "生まれ変わる者") return sum;
-                    const gx = GENJYU_DATA.find(x => x.genjyuName === node.name);
+                    const gx = getNodeGenjyu(node);
                     return sum + (gx ? calculateSingleBonus(gx, type) : 0);
                 }, 0);
             }
@@ -365,30 +417,11 @@ function openDetailModal(genjyuId) {
 
     variantList.sort((a, b) => {
         if (b[currentTarget] !== a[currentTarget]) return b[currentTarget] - a[currentTarget];
-        return (b.a + b.d + b.s) - (a.a + a.d + a.s);
+        const subA = a.a + a.d + a.s;
+        const subB = b.a + b.d + b.s;
+        if (subB !== subA) return subB - subA;
+        return comparePathLex(a.path || [], b.path || []);
     });
-
-if (variantList && variantList.length > 1) {
-        variantList.sort((a, b) => {
-            const pathA = a.path || [];
-            const pathB = b.path || [];
-            const maxLen = Math.max(pathA.length, pathB.length);
-
-            for (let i = 0; i < maxLen; i++) {
-                const nameA = pathA[i] ? String(pathA[i].name || "").trim() : "";
-                const nameB = pathB[i] ? String(pathB[i].name || "").trim() : "";
-
-                if (nameA !== nameB) {
-                    // numeric: true で数字混じりの名前を自然にソート
-                    // sensitivity: 'base' で濁点などの細かい差異を無視するかは検討が必要ですが、
-                    // まずはデフォルトに近い ja 指定で。
-                    return nameA.localeCompare(nameB, 'ja', { numeric: true });
-                }
-            }
-            // 全て同じ名前で長さが違う場合、短い方を先にする
-            return pathA.length - pathB.length;
-        });
-    }
 
     // --- 要約せず、全行程を summary に叩き込む ---
     variantList.forEach((v, i) => {
