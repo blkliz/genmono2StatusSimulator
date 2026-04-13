@@ -425,11 +425,11 @@ let html = `
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="14" style="background: #ffffff; padding: 6px 12px; border-bottom: 2px solid #ccc;">
-                                <div style="width: 100%; max-width: calc(100vw - 60px); color: #555; font-size: 0.75rem; line-height: 1.5; word-wrap: break-word; white-space: normal;">
-                                    ${v.summary}
-                                </div>
-                            </td>
+                            <td colspan="14" style="background: #ffffff; padding: 8px 12px; border-bottom: 2px solid #ccc;">
+        <div style="width: calc(100% - 24px); min-width: 800px; color: #555; font-size: 0.75rem; line-height: 1.5; white-space: normal; word-break: break-all;">
+            ${v.summary}
+        </div>
+    </td>
                         </tr>
                     `).join('')}
                 </tbody>
