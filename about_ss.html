@@ -12,7 +12,7 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ステータスシミュレータについて</title>
+    <title>ステータスシミュレータ・理論値一覧表について</title>
     <style>
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -94,6 +94,72 @@
     </table>
 
 <hr>
+
+    <h1>理論値一覧表更新履歴・仕様など</h1>
+
+    <h2>理論値一覧表の仕様</h2>
+    <div class="info-box">
+
+<p>
+<section style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; line-height: 1.6;">
+    <h3 style="margin-top: 0; color: #333; border-bottom: 2px solid #555; padding-bottom: 8px;">ステータス算出の優先順位</h3>
+    <p>本一覧表では、選択した極ステータス（例：S極ならStamina）の理論値を最優先し、以下のロジックでルートを自動選別しています。</p>
+    
+    <ol style="background: #fff; padding: 15px 15px 15px 40px; border-radius: 5px; border-left: 5px solid #2c3e50;">
+        <li style="margin-bottom: 10px;"><strong>メイン極の最大化：</strong><br>選択した極が最大値となるルートをすべて抽出します。</li>
+        <li style="margin-bottom: 10px;"><strong>サブステータスの合計値：</strong><br>抽出された中から、他のステータス合計（S極ならA+D+L）が最も高いものを選択します。</li>
+        <li><strong>初速採用：</strong><br>合計値が同率のルートが複数存在する場合、システム上で最初に検出されたルートを1本に絞り込んで表示します。</li>
+    </ol>
+
+    <h3 style="margin-top: 25px; color: #333; border-bottom: 2px solid #555; padding-bottom: 8px;">他のステータス配分を確認したい場合</h3>
+    <p>幻獣名をクリックすると、同じメイン極理論値を維持したまま、異なるステータス配分を持つ「変化ルート候補」を一覧表示します。</p>
+
+    <div style="background: #fffcf0; padding: 15px; border: 1px dashed #e67e22; border-radius: 5px;">
+        <p style="margin-top: 0;"><strong>⚠️ 表示の制限</strong><br>
+        この一覧には、メイン極が最大値かつ、上記ロジックで抽出されたルートのサブステータス合計値（A+D）と同等、あるいはそれに近い候補のみが表示されます。もし特定のステータス（Aなど）が高いルートが存在しても、合計値が採用ルートに及ばない場合は表示されない可能性があります。</p>
+        
+        <p style="margin-bottom: 0;"><strong>💡 個別シミュレーションの推奨</strong><br>
+        本一覧表は「特定の前世ルート」に基づいた理論値を提示しています。「S極の中でも前世でAptを多めに確保したい」といった詳細なカスタマイズが必要な場合は、個別に<strong>ステータスシミュレーター</strong>へ条件を入力し、算出を行ってください。</p>
+    </div>
+</section>
+</p>
+        <p>[2026.04.12]</p>
+
+    </div>
+
+
+
+    <h2>パッチノート</h2>
+    <div class="info-box">
+<p>
+<b>v0.1.18:理論値と同値別ルートをウインドウ表示できるようにしました。[2026.04.13]</b><br>
+理論値一覧表の幻獣名をクリックすると、別ルートを示すモーダル(小さいウインドウのようなもの)が表示されます。
+</p>
+
+    </div>
+
+
+
+    <h2>確認された不具合</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 70%;">内容</th>
+                <th>状況</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>対象外ステータス(S極選択時のAやDなど)の判定ロジック不具合</td>
+                <td><span class="status-fixed">対応済み</span> [2026.04.12] </td>
+            </tr>
+            <tr>
+        </tbody>
+    </table>
+
+<hr>
+
+
 
 <div align="center">
 <a href="index.html">もどる</a>
