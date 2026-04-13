@@ -380,7 +380,7 @@ function openDetailModal(genjyuId) {
         <div style="margin-bottom: 15px;">
             <button onclick="closeModal()" style="padding: 5px 15px; cursor: pointer;">閉じる</button>
         </div>
-        <div style="overflow-x: auto;">
+        <div style="overflow-x: auto; width: 100%; max-width: 100%;">
             <table class="modal-table">
                 <thead>
                     <tr>

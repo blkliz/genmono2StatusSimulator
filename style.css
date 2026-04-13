@@ -308,48 +308,42 @@ details[open] summary::before { content: "▼ "; }
     margin: 2vh auto;
     padding: 20px;
     border-radius: 8px;
-    width: fit-content;
-    min-width: 800px;
-    max-width: 95vw;
-    /* 縦幅を画面の90%に制限し、はみ出たらスクロール */
+    
+    /* 修正ポイント：min-widthを消し、widthを可変にする */
+    width: 95vw;           /* スマホでは画面幅いっぱい */
+    max-width: 1200px;     /* PCでの広がりすぎ防止 */
+    
     max-height: 90vh;
-    overflow-y: auto; 
+    overflow-y: auto;      /* 縦スクロール */
+    overflow-x: hidden;    /* パネル自体は横スクロールさせない（中のdivに任せる） */
+    
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     position: relative;
 }
 
-/* 理論値候補テーブルのスタイル（モバイル対応強化版） */
+/* テーブルを囲うdiv（JSで書いた overflow-x: auto を活かす） */
+#route-modal div[style*="overflow-x: auto"] {
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 理論値候補テーブルのスタイル（ボーダー復活） */
 .modal-table {
     width: 100%;
-    /* collapse ではなく separate + spacing 0 が sticky 時の正解 */
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     white-space: nowrap;
-    border: 1px solid #ddd; /* 外枠を明示 */
 }
 
 .modal-table th, 
 .modal-table td {
-    /* 1pxだと細すぎてスマホの解像度で見失うことがあるため、
-       色が薄い場合は #999 など少し濃くするか、1.5px を検討してください */
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd; /* ボーダーを明示 */
     padding: 8px;
     text-align: center;
-    background-color: #fff; /* 背景色を明示して透過を防ぐ */
-}
-
-/* 最後の列と行の余剰ボーダーを消す（separate の場合必要） */
-.modal-table th:last-child,
-.modal-table td:last-child {
-    border-right: none;
 }
 
 .modal-table th {
     background-color: #f4f4f4;
-    position: sticky;
+    position: sticky; /* ヘッダーを固定 */
     top: 0;
     z-index: 2;
-    /* stickyなヘッダーの下線が消えるのを防ぐ */
-    border-bottom: 2px solid #ccc; 
 }
