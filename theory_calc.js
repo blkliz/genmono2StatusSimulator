@@ -368,18 +368,25 @@ function openDetailModal(genjyuId) {
         return (b.a + b.d + b.s) - (a.a + a.d + a.s);
     });
 
-// --- ソートは維持 ---
-    if (variantList && variantList.length > 1) {
+if (variantList && variantList.length > 1) {
         variantList.sort((a, b) => {
             const pathA = a.path || [];
             const pathB = b.path || [];
             const maxLen = Math.max(pathA.length, pathB.length);
+
             for (let i = 0; i < maxLen; i++) {
                 const nameA = pathA[i] ? String(pathA[i].name || "").trim() : "";
                 const nameB = pathB[i] ? String(pathB[i].name || "").trim() : "";
-                if (nameA !== nameB) return nameA.localeCompare(nameB, 'ja');
+
+                if (nameA !== nameB) {
+                    // numeric: true で数字混じりの名前を自然にソート
+                    // sensitivity: 'base' で濁点などの細かい差異を無視するかは検討が必要ですが、
+                    // まずはデフォルトに近い ja 指定で。
+                    return nameA.localeCompare(nameB, 'ja', { numeric: true });
+                }
             }
-            return 0;
+            // 全て同じ名前で長さが違う場合、短い方を先にする
+            return pathA.length - pathB.length;
         });
     }
 
