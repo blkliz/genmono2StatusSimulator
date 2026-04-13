@@ -228,29 +228,103 @@ details[open] summary::before { content: "▼ "; }
 
 /* --- テーブル枠固定の設定 --- */
 
+/* --- TheoryValues.html 専用（.theory-values-page 配下のみ） --- */
+
+.theory-values-page .container {
+    max-width: 1250px;
+}
+
+.theory-values-page .mode-selector {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.theory-values-page .mode-selector button {
+    flex: 1;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.theory-values-page .active-mode {
+    background: #4a5d6a !important;
+    color: white !important;
+}
+
+.theory-values-page .val-cell {
+    font-family: "Garamond", serif;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.theory-values-page .pt-this {
+    color: #2c3e50;
+    font-weight: bold;
+    background: #f0f4f8;
+}
+
+.theory-values-page .pt-total {
+    color: #7f8c8d;
+    font-size: 0.7rem;
+}
+
+.theory-values-page .highlight {
+    background: #fff9e6 !important;
+}
+
+.theory-values-page .route-btn {
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.theory-values-page .filter-controls {
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.theory-values-page .filter-controls input,
+.theory-values-page .filter-controls select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
 /* コンテナに横スクロールを許可 */
-.table-container {
+.theory-values-page .table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* テーブルが縮まないよう最小幅を確保 */
-.theory-table {
-    min-width: 1000px; /* 列が増えたので少し広めに確保 */
-    border-collapse: separate; /* stickyを効かせるために必要 */
+/* テーブルが縮まないよう最小幅を確保（sticky 用は separate のまま） */
+.theory-values-page .theory-table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: separate;
     border-spacing: 0;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #ccc;
 }
 
-/* 共通：固定列の背景色（透け防止） */
-.theory-table th, 
-.theory-table td {
+/* 全セル：枠線・余白（右・下のみで隣接セルと二重にならない） */
+.theory-values-page .theory-table th,
+.theory-values-page .theory-table td {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 6px;
+    text-align: center;
+    vertical-align: middle;
+    box-sizing: border-box;
     background-color: #fff;
 }
 
 /* 1列目(No)の固定 */
-.theory-table th:nth-child(1),
-.theory-table td:nth-child(1) {
+.theory-values-page .theory-table th:nth-child(1),
+.theory-values-page .theory-table td:nth-child(1) {
     position: sticky;
     left: 0;
     z-index: 10;
@@ -260,8 +334,8 @@ details[open] summary::before { content: "▼ "; }
 }
 
 /* 2列目(幻獣名)の固定 */
-.theory-table th:nth-child(2),
-.theory-table td:nth-child(2) {
+.theory-values-page .theory-table th:nth-child(2),
+.theory-values-page .theory-table td:nth-child(2) {
     position: sticky;
     left: 40px; /* 1列目の幅(40px)に合わせる */
     z-index: 10;
@@ -269,27 +343,32 @@ details[open] summary::before { content: "▼ "; }
     border-right: 2px solid #5a6d7a; /* 境界を強調 */
 }
 
-/* ヘッダー部分はスクロール時に最前面へ */
-.theory-table thead th {
+/* ヘッダー：見た目＋スクロール時に最前面へ */
+.theory-values-page .theory-table thead th {
     position: sticky;
     top: 0;
     z-index: 20;
     background-color: #5a6d7a;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    border-right-color: #ccc;
+    border-bottom-color: #ccc;
 }
 
 /* Noと幻獣名のヘッダー角部分は最高優先度 */
-.theory-table thead tr:nth-child(1) th:nth-child(1),
-.theory-table thead tr:nth-child(1) th:nth-child(2) {
+.theory-values-page .theory-table thead tr:nth-child(1) th:nth-child(1),
+.theory-values-page .theory-table thead tr:nth-child(1) th:nth-child(2) {
     z-index: 30;
 }
 
-/* 偶数行の背景色（固定列にも適用して縞々を維持） */
-.theory-table tr:nth-child(even) td {
+/* 偶数行の背景色（tbody のみ・固定列にも適用して縞々を維持） */
+.theory-values-page .theory-table tbody tr:nth-child(even) td {
     background-color: #f9f9f9;
 }
 
-/* モーダル外枠：背景の暗転 */
-#route-modal {
+/* モーダル外枠：暗転＋はみ出し時はオーバーレイ側でもスクロール可 */
+.theory-values-page #route-modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -297,53 +376,64 @@ details[open] summary::before { content: "▼ "; }
     top: 0;
     width: 100%;
     height: 100%;
+    max-height: 100vh;
     background-color: rgba(0,0,0,0.5);
-    /* 外側のスクロールは消し、内側で制御します */
-    overflow: hidden; 
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    padding: 12px 10px;
 }
 
 /* モーダルの中身：白いパネル部分 */
-#route-modal > div {
+.theory-values-page #route-modal > .modal-body {
     background: white;
     margin: 2vh auto;
     padding: 20px;
     border-radius: 8px;
-    
-    /* 修正ポイント：min-widthを消し、widthを可変にする */
-    width: 95vw;           /* スマホでは画面幅いっぱい */
-    max-width: 1200px;     /* PCでの広がりすぎ防止 */
-    
-    max-height: 90vh;
-    overflow-y: auto;      /* 縦スクロール */
-    overflow-x: hidden;    /* パネル自体は横スクロールさせない（中のdivに任せる） */
-    
+    width: 95vw;
+    max-width: 1200px;
+    max-height: min(90vh, calc(100vh - 48px));
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     position: relative;
+    box-sizing: border-box;
 }
 
-/* テーブルを囲うdiv（JSで書いた overflow-x: auto を活かす） */
-#route-modal div[style*="overflow-x: auto"] {
+.theory-values-page #route-modal div[style*="overflow-x: auto"] {
     width: 100%;
+    max-width: 100%;
     -webkit-overflow-scrolling: touch;
 }
 
+.theory-values-page .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
 /* 理論値候補テーブルのスタイル（ボーダー復活） */
-.modal-table {
+.theory-values-page .modal-table {
     width: 100%;
     border-collapse: collapse;
     white-space: nowrap;
 }
 
-.modal-table th, 
-.modal-table td {
-    border: 1px solid #ddd; /* ボーダーを明示 */
+.theory-values-page .modal-table th,
+.theory-values-page .modal-table td {
+    border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
 }
 
-.modal-table th {
+.theory-values-page .modal-table th {
     background-color: #f4f4f4;
-    position: sticky; /* ヘッダーを固定 */
+    position: sticky;
     top: 0;
     z-index: 2;
 }
