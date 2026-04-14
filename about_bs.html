@@ -51,148 +51,91 @@
     <h1>討伐シミュレータ更新履歴・仕様等</h1>
 
 
-    <h2>討伐シミュレータの仕様</h2>
-    <div class="info-box">
+<div class="info-box">
+<section style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; line-height: 1.6;">
+<h3 style="margin-top: 0; color: #333; border-bottom: 2px solid #555; padding-bottom: 8px;">アビリティ・計算ロジック</h3>
 
-<p>
-[武器グレードによる発動率加算について]：<br>
-現状ではWikiの記述を参考に、グレード1につき+1.1%加算を採用しています。[2026.03.13]
-</p>
+<p>検証データおよびWikiの仕様に基づき、以下の独自ロジックを採用しています。</p>
 
-<p>
-[福音について]：<br>
-2026.01.24時点でWikiのデータを元に空白部分を逆算して予測値を入力しています。あくまで私の予想値ですが、(200*グレード+200)*強化値倍率を採用しています。<br>
-※強化値倍率<br>
-+0：1.00、+1：1.025、+2：1.05、+3：1.10、+4：1.175、+5：1.30、+6：1.45、+7：1.675、+8：1.925、+9：2.225、+10：2.60、+11：3.025、+12：3.525、+13：4.075、+14：4.70、+15：5.40、+16：6.175、+17：7.00、+18：7.925、+19：8.925、+20：10.00<br>
-[2026.02.02]
-</p>
+<ul style="background: #fff; padding: 15px 15px 15px 40px; border-radius: 5px; border-left: 5px solid #2c3e50; list-style-type: disc;">
+    <li style="margin-bottom: 10px;"><strong>武器グレード補正：</strong><br>グレード1につき発動率を<strong>+1.1%</strong>加算して算出します。(他シミュレータ様で1％採用を見かけますが、どちらが正解かわからないのでWiki値採用の形)</li>
+    <li style="margin-bottom: 10px;"><strong>段階上昇アビリティ：</strong><br>「不乱」「壮健」等のHP残量依存アビリティは、％区切り値による判定ではなく<strong>線形補間</strong>で処理しています。※実機や他シミュレータ様と乖離が生じる可能性があります。</li>
+    <li style="margin-bottom: 10px;"><strong>福音の予測値：</strong><br>Wikiの空白部分を <code>(200 * グレード + 200) * 強化値倍率</code> として逆算・補完しています。(※私が算出した強化値倍率　+0：1.00、+1：1.025、+2：1.05、+3：1.10、+4：1.175、+5：1.30、+6：1.45、+7：1.675、+8：1.925、+9：2.225、+10：2.60、+11：3.025、+12：3.525、+13：4.075、+14：4.70、+15：5.40、+16：6.175、+17：7.00、+18：7.925、+19：8.925、+20：10.00)</li>
+    <li><strong>天晴の暫定処理：</strong><br>グレード10以外の回復量は現在不明なため、一律 <strong>2,000固定</strong> のダミーデータとして処理しています。</li>
+</ul>
 
-<p>
-[天晴について]：<br>
-2026.02.02時点でグレード10以外の回復量が不明なため、グレード10以外の回復量を一律2000固定のダミーデータに設定しています。[2026.02.02]
-</p>
+<h3 style="margin-top: 25px; color: #333; border-bottom: 2px solid #555; padding-bottom: 8px;">装備データの収録範囲</h3>
+<p>全ての装備を網羅しているわけではなく、主に討伐で有用とされるものを中心にピックアップして反映しています。</p>
 
-<p>[一部アビリティの計算処理]：<br>
-不乱・壮健のような段階的に火力が上昇するアビリティの計算式を、60%以上,50%以上…のような%区切りではなく、線形補間によって処理しています。特にこの2つのアビリティについては実際のゲーム内のロジックや、他シミュレータ様との結果の乖離が大きい可能性があります。詳細判明次第改修する可能性があります。</p>
+<div style="background: #fffcf0; padding: 15px; border: 1px dashed #e67e22; border-radius: 5px;">
+    <p style="margin-top: 0;"><strong>⚠️ 注意事項</strong><br>
+    属性防御系のキグルミ等、一部の特殊装備は未実装です。検証が必要な装備があれば個別対応を検討しますのでお知らせください。</p>
+</div>
 
-<p>
-[装備について]：<br>
-全データ網羅はしておりません。基本的には討伐に有用な物をピックアップして反映しておりますが、属性防御系のキグルミなど一部手間省略のために反映していない物もあります。ご了承下さい。(要望があれば個別対応する可能性はあります。)
-</p>
-        <p>[2026.02.02]</p>
 
+</section>
+<p>[最終更新：2026.03.13]</p>
+</div>
+
+<h2>パッチノート</h2>
+<div class="info-box">
+<section style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+
+
+<div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+    <strong style="color: #d35400;">v0.4.32：データ外部入出力機能の実装 [2026.03.14]</strong>
+    <p style="margin-top: 5px; font-size: 0.95em;">全幻獣データをJSON形式で保存・復元できるようになりました。機種変更やバックアップにご利用ください。</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.85em; background: #fff;">
+        <tr style="border-bottom: 1px solid #eee;">
+            <th style="padding: 8px; text-align: left; width: 25%; background: #f2f2f2;">OS</th>
+            <th style="padding: 8px; text-align: left; background: #f2f2f2;">保存先 / 備考</th>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border-right: 1px solid #eee;"><strong>Windows / Mac</strong></td>
+            <td style="padding: 8px;">ブラウザのデフォルト保存先フォルダ</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border-right: 1px solid #eee;"><strong>Android</strong></td>
+            <td style="padding: 8px;">内部ストレージ ＞ Download フォルダ</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border-right: 1px solid #eee;"><strong>iOS (iPhone)</strong></td>
+            <td style="padding: 8px;">「ファイル」アプリ ＞ このiPhone内 ＞ ダウンロード</td>
+        </tr>
+    </table>
+    <p style="font-size: 0.8em; color: #777; margin-top: 5px;">※ファイル名の日付はUTC（世界標準時）準拠です。日本時間午前9時までは前日の日付になります。</p>
+</div>
+
+<div style="margin-bottom: 10px; font-size: 0.9em;">
+    <strong>v0.4.30 - v0.4.31：ロジック最適化 [2026.03.13]</strong>
+    <ul style="margin: 5px 0; padding-left: 20px;">
+        <li>和属協撃の計算過程における小数点処理（一括切り上げ）を改善</li>
+        <li>ターンオーバー判定ロジックの微調整</li>
+    </ul>
+</div>
+
+<div style="margin-bottom: 10px; font-size: 0.9em;">
+    <strong>v0.4.28 - v0.4.29：不具合修正とログ拡張 [2026.02.10]</strong>
+    <ul style="margin: 5px 0; padding-left: 20px;">
+        <li>改命アビリティのS上昇値計算を修正</li>
+        <li>平均討伐ターン数の出力機能を追加</li>
+        <li>計算ロジックを「切り捨て」から「切り上げ」へ全面的に刷新</li>
+    </ul>
+</div>
+
+<details style="font-size: 0.85em; color: #666;">
+    <summary style="cursor: pointer; color: #3498db;">過去の修正履歴を表示</summary>
+    <div style="padding: 10px; background: #f4f4f4; border-radius: 5px; margin-top: 5px;">
+        v0.4.27：天晴の暫定対応・バフ不具合修正<br>
+        v0.4.25：防御(D)によるダメージ軽減未適用の不具合修正<br>
+        v0.4.23：防具アビリティが素ステータスを参照していた件を修正<br>
+        v0.4.19：高揚・紅舞のバフ重複計算不具合を修正<br>
+        v0.4.14：和属・粉砕の処理ロジック調整
     </div>
+</details>
 
-
-
-    <h2>パッチノート</h2>
-    <div class="info-box">
-<p>
-<b>v0.4.32:全幻獣データの外部ファイル出力/入力機能追加。[2026.03.14]</b><br>
-画面下部の「全幻獣データをファイルに保存」を押すと、<br>
-・PCの場合:<br>
-任意のフォルダ<br>
-・Androidの場合:<br>ブラウザのダウンロードフォルダ(Chromeであれば内部共有ストレージ/Download内)<br>
-・iPhoneの場合:<br>標準アプリの「ファイル」から、「ブラウズ」タブ ＞ 「このiPhone内」 ＞ 「ダウンロード」<br>
-内に「genjyu_backup_(日付).json」として保存されます。<br>
-(*日付はUTC準拠です。日本時間では午前9時以前に保存すると、前日と日付が同じになります。)<br>
-<br>(iPhoneは標準的な挙動の場合この場所だそうですが、iPhoneを
-所有していませんので違う場合はお知らせ頂ければと思います。)<br>
-</p>
-<p>
-v0.4.31:和属協撃の小数点処理を変更しました。[2026.03.13]
-</p>
-
-<p>
-v0.4.30:ターンオーバー判定ロジックを微調整しました。[2026.03.13]
-</p>
-
-<p>
-v0.4.29:(Ver変更なし)改命アビリティのS上昇値不具合修正しました。[2026.02.10]
-</p>
-
-<p>
-v0.4.29:討伐ログに平均ターン数を出力するようにしました。[2026.02.04]
-</p>
-
-<p>
-v0.4.28:
-一部乱数生成およびバリデーションを除き、小数点以下切捨て処理から切り上げ処理へ変更しました。
-</p>
-
-<p>
-v0.4.27:
-天晴のカードに暫定対応しました。天晴のバフ処理不具合修正しました。
-</p>
-
-<p>
-v0.4.26:v0.4.17で修正していた紅舞の不具合処理が漏れていた件、修正しました。
-</p>
-
-<p>
-v0.4.25:
-Dによるダメージ軽減処理が計算されていなかった不具合を修正しました。
-</p>
-
-<p>
-v0.4.24:
-敵側高揚処理が正しく計算されていなかった不具合を修正しました。
-</p>
-
-<p>
-v0.4.23:
-防具アビリティの参照元が素ステになっていた不具合を修正しました。
-</p>
-
-
-<p>
-v0.4.22:
-敵側のアビリティが発動しない不具合を修正しました。
-</p>
-
-
-<p>
-v0.4.21:
-デバッグログに属性相性やアビリティ補正等を出力するようにしました。
-</p>
-
-<p>
-v0.4.20:
-参加人数によるターン制限が正常に機能していなかった不具合を修正しました。
-</p>
-
-<p>
-v0.4.19:
-高揚・紅舞のバフ効果が1ターンに2回かかってしまう不具合を修正しました。
-</p>
-
-<p>
-v0.4.18:
-ログ出力の不具合を修正しました。
-</p>
-
-
-<p>
-v0.4.17:
-紅舞、盟旗のバフ対象、バフ順序の不具合を修正しました。
-</p>
-
-<p>
-v0.4.16:
-バトルログにデバッグログを出力するようにしました。
-</p>
-
-<p>
-v0.4.15:
-一部アビリティ(天晴など)の処理ロジックを調整しました。
-</p>
-
-<p>
-v0.4.14:
-和属および粉砕の処理ロジックを調整しました。
-</p>
-
-    </div>
+</section>
+</div>
 
 
 
