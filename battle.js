@@ -651,7 +651,9 @@ function runBattle(count) {
 		            // 死亡者はここで蘇生（バフ判定の前に isDead を false にする）
 		            un.isDead = false;
 		            // 天晴ならテーブル値、それ以外は1
-		            un.s = (resE.abi === "天晴") ? resE.heal : 1;
+		            // 修正点: 天晴の場合も Math.min を使い、最大HPを超えないように制御する
+                    let healAmt = (resE.abi === "天晴") ? resE.heal : 1;
+                    un.s = Math.min(un.maxS, healAmt);
 		        }
 		    });
 		}
