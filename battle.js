@@ -43,7 +43,7 @@ window.onload = () => {
             for (let i = 2; i <= 4; i++) {
                 const targetContainer = document.getElementById(`unit-inner-${i}`);
                 if (targetContainer) {
-                    targetContainer.innerHTML = baseHtml.replace(/-1/g, `-${i}`);
+                    targetContainer.innerHTML = baseHtml.replace(/(id|name|for|class)="(.*?)-1"/g, `$1="$2-${i}"`);
                 }
             }
         }
@@ -194,6 +194,16 @@ function setupValidation(id) {
             updateRealStatus(id);
         });
     });
+}
+
+function escapeHTML(str) {
+    if (!str) return "";
+    return str.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function setupSaveLoad(id) {
@@ -677,10 +687,13 @@ function runBattle(count) {
                 if (needDetail) {
                     battleSummary += `<small style="color:#888">${resE.debugInfo}</small><br>`;
                     if (resE.heal > 0) {
-                        const statusList = units.filter(un => un).map(un => `${un.name} ${Math.floor(un.s)}/${un.maxS}`).join(',');
-                        battleSummary += `[T${currentTurn}] ${u.name}の${resE.abi}: (${statusList})<br>`;
+                    // mapの中で un.name をエスケープ
+                    const statusList = units.filter(un => un).map(un => `${escapeHTML(un.name)} ${Math.floor(un.s)}/${un.maxS}`).join(',');
+                    // u.name をエスケープ
+                    battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${resE.abi}: (${statusList})<br>`;
                     } else {
-                        battleSummary += `[T${currentTurn}] ${u.name}の${resE.abi || "攻撃"}: ${resE.dmg}(残り:${Math.max(0, enemy.s)})<br>`;
+                    // u.name をエスケープ
+                        battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${resE.abi || "攻撃"}: ${resE.dmg}(残り:${Math.max(0, enemy.s)})<br>`;
                     }
                 }
                 if (enemy.s <= 0) { isWin = true; endReason = "討伐成功"; break battleLoop; }
@@ -697,7 +710,8 @@ function runBattle(count) {
 
                 if (needDetail) {
                     battleSummary += `<small style="color:#888">${resU.debugInfo}</small><br>`;
-                    battleSummary += `&nbsp;&nbsp;反撃: ${simpleEnemyName}${resU.abi ? 'の' + resU.abi : ''}: ${u.name}に${resU.dmg}(残り:${Math.max(0, u.s)})<br>`;
+                    // 修正点: 敵の名前(simpleEnemyName)と幻獣の名前(u.name)を両方エスケープする
+                    battleSummary += `&nbsp;&nbsp;反撃: ${escapeHTML(simpleEnemyName)}${resU.abi ? 'の' + resU.abi : ''}: ${escapeHTML(u.name)}に${resU.dmg}(残り:${Math.max(0, u.s)})<br>`;
                 }
                 if (u.s <= 0) {
                     u.s = 0; u.isDead = true; 
