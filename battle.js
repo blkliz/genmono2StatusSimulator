@@ -580,7 +580,7 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         let comp = getComp(enemy.attr, atkUnit.attr);
         let baseSub = Math.max(1, Math.ceil(calcEnemyAtk * enemyAbiMultiplier) - atkUnit.currentDef);
         
-        // Defenseによる軽減率の計算 (1 - 込みD/100000)
+        // 戦闘開始時の防具込みDでのみ計算する軽減式 (1 - 込みD/100000)
         let defenseReductionRate = Math.max(0, 1 - (atkUnit.def / 100000));
         
         // 基本計算に軽減率を適用
