@@ -973,7 +973,9 @@ const GENJYU_DATA = [
   { "genjyuId": 971, "genjyuName": "海診のメディーカ", "genjyuType": "霊", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 27.3, "attackFactor": 11, "defenseFactor": 12.7, "luckFactor": 1 }, "evolutionItem": { "eItemName": "クラムカルテ", "eItemRarity": 4 }, "parentIds": [,501,], "variantIds": [] },
   { "genjyuId": 972, "genjyuName": "揺籃のベルシーニュ", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 53.3, "attackFactor": 12.7, "defenseFactor": 18.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "勿忘の天蓋", "eItemRarity": 7 }, "parentIds": [,854,], "variantIds": [] },
     { "genjyuId": 973, "genjyuName": "グラスィオ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40, "attackFactor": 20.8, "defenseFactor": 12.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "パンセ・ブーケ", "eItemRarity": 7 }, "parentIds": [,499,], "variantIds": [] },
-      { "genjyuId": 974, "genjyuName": "弥終のフロウフシ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.3, "defenseFactor": 14.3, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "思い浮かぶ孤島", "eItemRarity": 7 }, "parentIds": [,898,], "variantIds": [] }
+      { "genjyuId": 974, "genjyuName": "弥終のフロウフシ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.3, "defenseFactor": 14.3, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "思い浮かぶ孤島", "eItemRarity": 7 }, "parentIds": [,898,], "variantIds": [] },
+  { "genjyuId": 975, "genjyuName": "子泣き爺", "genjyuType": "獣", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 29.7, "attackFactor": 10.6, "defenseFactor": 14.4, "luckFactor": 1 }, "evolutionItem": { "eItemName": "起き上がらずこぼし", "eItemRarity": 5 }, "parentIds": [,71,], "variantIds": [] },
+  { "genjyuId": 976, "genjyuName": "太公望", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30.5, "attackFactor": 24.88, "defenseFactor": 14, "luckFactor": 1 }, "evolutionItem": { "eItemName": "太極天命印", "eItemRarity": 7 }, "parentIds": [,956,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
