@@ -1,4 +1,4 @@
-/* main.js v0.3.0-p17 */
+/* main.js v0.3.16 */
 
 let genjyuMaster = (typeof GENJYU_DATA !== 'undefined') ? GENJYU_DATA : [];
 
