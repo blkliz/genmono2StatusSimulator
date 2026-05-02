@@ -1,6 +1,19 @@
 /**
- * theory_calc.js - 理論値計算エンジン v0.1.9
+ * theory_calc.js - 理論値計算エンジン v0.1.10
  */
+
+const SEARCH_NAME_MAX_LEN = 120;
+
+/** innerHTML 挿入前のテキストエスケープ */
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 let currentTarget = 'a';
 let sortKey = 'a';
@@ -15,6 +28,9 @@ let genjyuById = null;
 let genjyuByName = null;
 
 let modalHistory = ""; // 履歴保存用
+/** openDetailModal 内「R」ボタン用：ルート配列の退避 */
+let lastDetailRouteVariants = [];
+let lastDetailModalGenjyuId = null;
 
 function ensureGenjyuIndex() {
     if (genjyuById && genjyuByName) return;
@@ -239,7 +255,11 @@ function render() {
     const tbody = document.getElementById('table-body');
     if (!tbody) return;
 
-    const searchName = document.getElementById('search-name').value.toLowerCase();
+    const rawSearch = document.getElementById('search-name').value;
+    const searchName = String(rawSearch)
+        .replace(/\0/g, '')
+        .slice(0, SEARCH_NAME_MAX_LEN)
+        .toLowerCase();
     const filterClass = document.getElementById('filter-class').value;
     const filterType = document.getElementById('filter-type').value; 
     
@@ -326,25 +346,30 @@ function render() {
         <tr>
             <td>${g.id}</td>
             <td style="text-align:left; font-weight:bold;">
-    <a href="javascript:void(0)" onclick="openDetailModal(${g.id})" style="color:inherit; text-decoration:underline;">${g.name}</a>
+    <a href="javascript:void(0)" onclick="openDetailModal(${g.id})" style="color:inherit; text-decoration:underline;">${escapeHtml(g.name)}</a>
 </td>
-            <td>${g.class}</td>
-            <td>${g.type || '-'}</td>
+            <td>${escapeHtml(g.class)}</td>
+            <td>${escapeHtml(g.type || '-')}</td>
             <td class="val-cell ${currentTarget==='s'?'highlight':''}">${g.s}</td><td class="pt-this">${g.s_this}</td><td class="pt-total">${g.s_total}</td>
             <td class="val-cell ${currentTarget==='a'?'highlight':''}">${g.a}</td><td class="pt-this">${g.a_this}</td><td class="pt-total">${g.a_total}</td>
             <td class="val-cell ${currentTarget==='d'?'highlight':''}">${g.d}</td><td class="pt-this">${g.d_this}</td><td class="pt-total">${g.d_total}</td>
             <td class="val-cell ${currentTarget==='l'?'highlight':''}">${g.l}</td><td class="pt-this">${g.l_this}</td><td class="pt-total">${g.l_total}</td>
-            <td><button class="route-btn" onclick="openRouteModal('${g.name}', '${currentTarget}', ${JSON.stringify(g.routePaths[currentTarget]).replace(/"/g, '&quot;')})">R</button></td>
+            <td><button type="button" class="route-btn" onclick="openRouteModal(${g.id}, '${currentTarget}')">R</button></td>
         </tr>
     `).join('');
 }
 
-function openRouteModal(name, type, pathArray) {
+function openRouteModal(genjyuId, type) {
+    const genjyu = getGenjyuById(genjyuId);
+    if (!genjyu) return;
+    const pathArray = getMaxPathBonus(genjyuId, type).path;
+    const name = genjyu.genjyuName;
+
     const modal = document.getElementById('route-modal');
     const title = document.getElementById('modal-title');
     const content = document.getElementById('modal-content');
     
-    title.innerText = `${name} (${type.toUpperCase()}極ルート)`;
+    title.textContent = `${name} (${type.toUpperCase()}極ルート)`;
     
     // スタイルに「スクロール対応」と「注釈」を追加
     let tableHtml = `
@@ -363,8 +388,8 @@ function openRouteModal(name, type, pathArray) {
         pathArray.forEach(node => {
             tableHtml += `
                 <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px; font-size: 0.85rem;">${node.name}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; font-size: 0.85rem;">${node.item}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; font-size: 0.85rem;">${escapeHtml(node.name)}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; font-size: 0.85rem;">${escapeHtml(node.item)}</td>
                 </tr>`;
         });
     } else {
@@ -384,10 +409,12 @@ function openDetailModal(genjyuId) {
     memoPathBonus = {};
     memoDetailPaths = {};
 
+    lastDetailModalGenjyuId = genjyuId;
+
     const modal = document.getElementById('route-modal');
     const content = document.getElementById('modal-content');
     const title = document.getElementById('modal-title');
-    title.innerText = `${genjyu.genjyuName} - 理論値ルート候補一覧 (${currentTarget.toUpperCase()}極)`;
+    title.textContent = `${genjyu.genjyuName} - 理論値ルート候補一覧 (${currentTarget.toUpperCase()}極)`;
 
     const res = getDetailPathVariants(genjyuId, currentTarget);
     
@@ -422,6 +449,8 @@ function openDetailModal(genjyuId) {
         if (subB !== subA) return subB - subA;
         return comparePathLex(a.path || [], b.path || []);
     });
+
+    lastDetailRouteVariants = variantList.map(v => v.path);
 
     // --- 要約せず、全行程を summary に叩き込む ---
     variantList.forEach((v, i) => {
@@ -461,13 +490,13 @@ let html = `
                             <td style="font-weight:bold; background:#fffcf0;">${v.d}</td><td>${v.d_this}</td><td>${v.d_total}</td>
                             <td style="font-weight:bold; background:#fffcf0;">${v.l}</td><td>${v.l_this}</td><td>${v.l_total}</td>
                             <td style="text-align: center;">
-                                <button class="route-btn" onclick='openRouteFromDetail("${genjyu.genjyuName}", "${currentTarget}", ${JSON.stringify(v.path).replace(/"/g, '&quot;')})'>R</button>
+                                <button type="button" class="route-btn" onclick="openRouteFromDetail(${i})">R</button>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="14" style="background: #ffffff; padding: 8px 12px; border-bottom: 2px solid #ccc;">
         <div style="width: calc(100% - 24px); min-width: 800px; color: #555; font-size: 0.75rem; line-height: 1.5; white-space: normal; word-break: break-all;">
-            ${v.summary}
+            ${escapeHtml(v.summary)}
         </div>
     </td>
                         </tr>
@@ -483,15 +512,21 @@ let html = `
 
 /**
  * 詳細一覧モーダルから呼ばれる「変化ルート表示」
+ * @param {number} variantIndex lastDetailRouteVariants のインデックス
  */
-function openRouteFromDetail(name, type, pathArray) {
+function openRouteFromDetail(variantIndex) {
+    const pathArray = lastDetailRouteVariants[variantIndex];
+    if (!pathArray) return;
+    const genjyu = getGenjyuById(lastDetailModalGenjyuId);
+    const name = genjyu ? genjyu.genjyuName : '';
+
     const content = document.getElementById('modal-content');
     
     let tableHtml = `
         <div style="margin-bottom: 15px;">
-            <button onclick="restoreModalDetail()" style="padding: 5px 15px; cursor: pointer;">← 候補一覧に戻る</button>
+            <button type="button" onclick="restoreModalDetail()" style="padding: 5px 15px; cursor: pointer;">← 候補一覧に戻る</button>
         </div>
-        <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">${name} の変化ルート</p>
+        <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">${escapeHtml(name)} の変化ルート</p>
         <div style="max-height: 50vh; overflow-y: auto; border: 1px solid #eee;">
             <table class="route-table" style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -505,8 +540,8 @@ function openRouteFromDetail(name, type, pathArray) {
     pathArray.forEach(node => {
         tableHtml += `
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">${node.name}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${node.item}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${escapeHtml(node.name)}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${escapeHtml(node.item)}</td>
             </tr>`;
     });
 

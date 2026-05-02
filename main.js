@@ -1,6 +1,64 @@
-/* main.js v0.3.0-p16 */
+/* main.js v0.3.0-p17 */
 
 let genjyuMaster = (typeof GENJYU_DATA !== 'undefined') ? GENJYU_DATA : [];
+
+const MANUAL_NAME_MAX_LEN = 120;
+
+function toSafeNonNegInt(v, fallback) {
+    const n = Number(v);
+    if (!Number.isFinite(n)) return fallback;
+    const t = Math.trunc(n);
+    return t < 0 ? fallback : t;
+}
+
+function isValidGenjyuId(id) {
+    return genjyuMaster.some(g => g.genjyuId === id);
+}
+
+/**
+ * ローカルストレージ経由の不正JSON・プロトタイプ汚染を避けるため、許可キーのみ・型を検証する。
+ */
+function sanitizeStateSnapshot(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const id = toSafeNonNegInt(raw.id, NaN);
+    const lv = toSafeNonNegInt(raw.lv, 1);
+    if (!isValidGenjyuId(id)) return null;
+    const reincCount = Math.min(255, Math.max(0, toSafeNonNegInt(raw.reincCount, 0)));
+    const limit = reincCount >= 8 ? 250 : 200;
+    const out = {
+        id,
+        lv: Math.min(Math.max(1, lv), limit),
+        pointS: Math.max(0, toSafeNonNegInt(raw.pointS, 5)),
+        pointA: Math.max(0, toSafeNonNegInt(raw.pointA, 5)),
+        pointD: Math.max(0, toSafeNonNegInt(raw.pointD, 5)),
+        pointL: Math.max(0, toSafeNonNegInt(raw.pointL, 5)),
+        remainPt: Math.max(0, toSafeNonNegInt(raw.remainPt, 0)),
+        reincCount
+    };
+    return out;
+}
+
+function sanitizeSlotPayload(parsed) {
+    if (!parsed || typeof parsed !== 'object') return null;
+    const state = sanitizeStateSnapshot(parsed.state);
+    if (!state) return null;
+    let hist = parsed.history;
+    if (!Array.isArray(hist)) hist = [];
+    if (hist.length > MAX_HISTORY * 4) return null;
+    const history = [];
+    for (let i = 0; i < hist.length; i++) {
+        const snap = sanitizeStateSnapshot(hist[i]);
+        if (!snap) return null;
+        history.push(snap);
+    }
+    return { state, history };
+}
+
+function sanitizeManualGenjyuName(name) {
+    if (typeof name !== 'string') return '';
+    const t = name.trim().replace(/\0/g, '');
+    return t.length > MANUAL_NAME_MAX_LEN ? t.slice(0, MANUAL_NAME_MAX_LEN) : t;
+}
 
 let currentState = {
     id: 0, 
@@ -51,14 +109,14 @@ function systemReset() {
 }
 
 function applyManualInput() {
-    const nameInput = document.getElementById('manual-name').value.trim();
-    let lvInput = Math.max(1, parseInt(document.getElementById('manual-lv').value) || 1);
-    const sInput = Math.max(0, parseInt(document.getElementById('manual-s').value) || 0);
-    const aInput = Math.max(0, parseInt(document.getElementById('manual-a').value) || 0);
-    const dInput = Math.max(0, parseInt(document.getElementById('manual-d').value) || 0);
-    const lInput = Math.max(0, parseInt(document.getElementById('manual-l').value) || 0);
-    const ptInput = Math.max(0, parseInt(document.getElementById('manual-pt').value) || 0);
-    const reincInput = Math.max(0, parseInt(document.getElementById('manual-reinc').value) || 0);
+    const nameInput = sanitizeManualGenjyuName(document.getElementById('manual-name').value);
+    let lvInput = Math.max(1, parseInt(document.getElementById('manual-lv').value, 10) || 1);
+    const sInput = Math.max(0, parseInt(document.getElementById('manual-s').value, 10) || 0);
+    const aInput = Math.max(0, parseInt(document.getElementById('manual-a').value, 10) || 0);
+    const dInput = Math.max(0, parseInt(document.getElementById('manual-d').value, 10) || 0);
+    const lInput = Math.max(0, parseInt(document.getElementById('manual-l').value, 10) || 0);
+    const ptInput = Math.max(0, parseInt(document.getElementById('manual-pt').value, 10) || 0);
+    const reincInput = Math.max(0, parseInt(document.getElementById('manual-reinc').value, 10) || 0);
 
     const targetGenjyu = genjyuMaster.find(g => g.genjyuName === nameInput);
     if (!targetGenjyu) {
@@ -98,9 +156,20 @@ function quickLoad() {
     const rawData = localStorage.getItem(`genjyu_sim_slot_${slot}`);
     if (!rawData) { alert("データがありません。"); return; }
     if (!confirm("ロードしますか？")) return;
-    const saveData = JSON.parse(rawData);
-    currentState = saveData.state;
-    historyStack = saveData.history || [];
+    let parsed;
+    try {
+        parsed = JSON.parse(rawData);
+    } catch {
+        alert("セーブデータの形式が壊れています。");
+        return;
+    }
+    const cleaned = sanitizeSlotPayload(parsed);
+    if (!cleaned) {
+        alert("セーブデータが不正か、対応する幻獣が見つかりません。");
+        return;
+    }
+    currentState = cleaned.state;
+    historyStack = cleaned.history;
     render();
 }
 
@@ -218,13 +287,20 @@ function createEvolutionButton(genjyu, isSpecial = false) {
     btn.style.padding = "6px 12px";
     btn.style.textAlign = "center";
     btn.style.lineHeight = "1.2";
-    let html = `<div style="font-weight: bold;">${genjyu.genjyuName}</div>`;
+    const titleDiv = document.createElement('div');
+    titleDiv.style.fontWeight = 'bold';
+    titleDiv.textContent = genjyu.genjyuName;
+    btn.appendChild(titleDiv);
+    const subDiv = document.createElement('div');
+    subDiv.style.fontSize = '0.75em';
+    subDiv.style.opacity = '0.8';
+    subDiv.style.marginTop = '2px';
     if (genjyu.evolutionItem && genjyu.evolutionItem.eItemName) {
-        html += `<div style="font-size: 0.75em; opacity: 0.8; margin-top: 2px;">[${genjyu.evolutionItem.eItemName}]</div>`;
+        subDiv.textContent = `[${genjyu.evolutionItem.eItemName}]`;
     } else if (isSpecial) {
-        html += `<div style="font-size: 0.75em; opacity: 0.8; margin-top: 2px;">(${genjyu.genjyuId === 0 ? "初期化" : "転生"})</div>`;
+        subDiv.textContent = `(${genjyu.genjyuId === 0 ? "初期化" : "転生"})`;
     }
-    btn.innerHTML = html;
+    if (subDiv.textContent) btn.appendChild(subDiv);
     return btn;
 }
 
