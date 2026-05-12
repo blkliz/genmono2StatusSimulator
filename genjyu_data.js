@@ -975,7 +975,8 @@ const GENJYU_DATA = [
   { "genjyuId": 973, "genjyuName": "グラスィオ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40, "attackFactor": 20.8, "defenseFactor": 12.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "パンセ・ブーケ", "eItemRarity": 7 }, "parentIds": [,499,], "variantIds": [] },
   { "genjyuId": 974, "genjyuName": "弥終のフロウフシ", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.3, "defenseFactor": 14.3, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "思い浮かぶ孤島", "eItemRarity": 7 }, "parentIds": [,898,], "variantIds": [] },
   { "genjyuId": 975, "genjyuName": "子泣き爺", "genjyuType": "獣", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 29.7, "attackFactor": 10.6, "defenseFactor": 14.4, "luckFactor": 1 }, "evolutionItem": { "eItemName": "起き上がらずこぼし", "eItemRarity": 5 }, "parentIds": [,71,], "variantIds": [] },
-  { "genjyuId": 976, "genjyuName": "太公望", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30.5, "attackFactor": 24.88, "defenseFactor": 14, "luckFactor": 1 }, "evolutionItem": { "eItemName": "太極天命印", "eItemRarity": 7 }, "parentIds": [,956,], "variantIds": [] }
+  { "genjyuId": 976, "genjyuName": "太公望", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30.5, "attackFactor": 24.88, "defenseFactor": 14, "luckFactor": 1 }, "evolutionItem": { "eItemName": "太極天命印", "eItemRarity": 7 }, "parentIds": [,956,], "variantIds": [] },
+    { "genjyuId": 977, "genjyuName": "穢心の業・レイラク", "genjyuType": "魔", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 31.1, "attackFactor": 17.15, "defenseFactor": 11.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "貪欲の望攫", "eItemRarity": 6 }, "parentIds": [,835,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
