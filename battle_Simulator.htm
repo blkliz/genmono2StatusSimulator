@@ -12,7 +12,7 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幻獣討伐シミュレータ v0.4.33</title>
+    <title>幻獣討伐シミュレータ v0.5.00</title>
     <link rel="stylesheet" href="style.css">
 
 <!--
@@ -55,6 +55,32 @@
                 </tr>
             </tbody>
         </table>
+
+<!-- Lv.LVUP時のみ表示されるエリア -->
+<div id="level-selector-area" style="display: none; margin: 15px 0; padding: 15px; border: 2px solid #555; border-radius: 8px; background-color: #f0f0f0; text-align: center;">
+    <div style="font-weight: bold; margin-bottom: 10px;">討伐レベル調整</div>
+    
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; align-items: center;">
+        <!-- マイナスボタン群 -->
+        <button type="button" onclick="adjustLevel(-100)">-100</button>
+        <button type="button" onclick="adjustLevel(-50)">-50</button>
+        <button type="button" onclick="adjustLevel(-10)">-10</button>
+        <button type="button" onclick="adjustLevel(-5)">-5</button>
+        <button type="button" onclick="adjustLevel(-1)">-1</button>
+
+        <!-- 入力欄 -->
+        <input type="number" id="enemy-level" value="1" min="1" 
+               style="width: 70px; height: 35px; text-align: center; font-size: 1.1em; font-weight: bold; border: 1px solid #999;">
+
+        <!-- プラスボタン群 -->
+        <button type="button" onclick="adjustLevel(1)">+1</button>
+        <button type="button" onclick="adjustLevel(5)">+5</button>
+        <button type="button" onclick="adjustLevel(10)">+10</button>
+        <button type="button" onclick="adjustLevel(50)">+50</button>
+        <button type="button" onclick="adjustLevel(100)">+100</button>
+    </div>
+</div>
+
         <p style="font-size:0.7rem; color:#777;">※数値は参考値です。適宜修正してください。また0=不明の可能性があります。</p>
     </section>
 

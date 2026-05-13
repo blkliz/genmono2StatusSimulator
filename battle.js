@@ -16,21 +16,38 @@ window.onload = () => {
     if (searchInput) {
         searchInput.addEventListener('change', function() {
             const selectedEnemy = enemies.find(enemy => enemy.name === this.value);
+            const levelArea = document.getElementById('level-selector-area');
+            const lvInput = document.getElementById('enemy-level');
+
             if (selectedEnemy) {
-                document.getElementById('selected-enemy-name').textContent = selectedEnemy.name;
-                document.getElementById('enemy-s').value = selectedEnemy.hp;
-                document.getElementById('enemy-a').value = selectedEnemy.atk;
-                document.getElementById('enemy-d').value = selectedEnemy.def;
-                
-                const typeTd = document.getElementById('enemy-type');
-                if (typeTd) {
-                    typeTd.innerHTML = `<span class="badge">${selectedEnemy.attr}</span>`;
+                if (selectedEnemy.name.startsWith('Lv.LVUP')) {
+                    // LVUP対象：専用の計算ロジックへ
+                    lvInput.value = 1;
+                    levelArea.style.display = 'block';
+                    updateStatusByMultiplier(selectedEnemy, 1);
+                } else {
+                    // 通常対象：既存のロジックで反映
+                    levelArea.style.display = 'none';
+
+                    // --- 既存の反映ロジック ---
+                    document.getElementById('selected-enemy-name').textContent = escapeHTML(selectedEnemy.name);
+                    document.getElementById('enemy-s').value = selectedEnemy.hp;
+                    document.getElementById('enemy-a').value = selectedEnemy.atk;
+                    document.getElementById('enemy-d').value = selectedEnemy.def;
+                    
+                    const typeTd = document.getElementById('enemy-type');
+                    if (typeTd) {
+                        typeTd.innerHTML = `<span class="badge">${escapeHTML(selectedEnemy.attr)}</span>`;
+                    }
+                    
+                    const abiTd = document.getElementById('enemy-ability');
+                    if (abiTd) {
+                        abiTd.textContent = escapeHTML(selectedEnemy.abi);
+                    }
+                    // -------------------------
                 }
-                
-                const abiTd = document.getElementById('enemy-ability');
-                if (abiTd) {
-                    abiTd.textContent = selectedEnemy.abi;
-                }
+            } else {
+                levelArea.style.display = 'none';
             }
         });
     }
@@ -56,6 +73,23 @@ window.onload = () => {
             updateRealStatus(i);
         }
     }
+
+        /**
+         * 入力欄が手打ちされた際のバリデーション
+         */
+        const lvInput = document.getElementById('enemy-level');
+        if (lvInput) {
+            lvInput.addEventListener('input', function() {
+                let val = parseInt(this.value, 10);
+
+                // 数字以外、または1未満が入力された場合は補正
+                if (isNaN(val) || val < 1) {
+                    val = 1;
+                }
+                this.value = val; // 正規化された値を戻す
+                triggerLevelUpdate();
+            });
+        }
 };
 
 const armorAbilityOrder = [
@@ -205,6 +239,60 @@ function escapeHTML(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+/**
+ * レベルを増減させ、再計算を行う関数
+ */
+function adjustLevel(step) {
+    const lvInput = document.getElementById('enemy-level');
+    
+    // XSS対策・不正入力対策: 
+    // 文字列を排除し、10進数の整数として解釈。失敗した場合は1にする。
+    let currentLv = parseInt(lvInput.value, 10);
+    if (isNaN(currentLv)) currentLv = 1;
+
+    // 増減計算
+    let newLv = currentLv + step;
+
+    // 下限チェック（1未満にならない）
+    if (newLv < 1) newLv = 1;
+
+    // 値のセットと再計算の実行
+    lvInput.value = newLv;
+    triggerLevelUpdate();
+}
+
+
+/**
+ * 現在の敵データとLvを元にステータスを更新する
+ */
+function triggerLevelUpdate() {
+    const searchVal = document.getElementById('enemy-search').value;
+    const selectedEnemy = enemies.find(e => e.name === searchVal);
+    const lv = parseInt(document.getElementById('enemy-level').value, 10);
+
+    if (selectedEnemy && selectedEnemy.name.startsWith('Lv.LVUP')) {
+        updateStatusByMultiplier(selectedEnemy, lv);
+    }
+}
+
+// レベルアップ討伐用
+function updateStatusByMultiplier(enemy, lv) {
+    // 安全にエスケープしてから表示
+    const displayName = enemy.name.replace('Lv.LVUP', `Lv.${lv}`);
+    document.getElementById('selected-enemy-name').textContent = escapeHTML(displayName);
+
+    // ステータスの反映（数値なのでそのままでOK）
+    document.getElementById('enemy-s').value = Math.floor(enemy.hp * lv);
+    document.getElementById('enemy-a').value = enemy.atk * lv;
+    document.getElementById('enemy-d').value = enemy.def * lv;
+
+    // 属性のバッジ表示（信頼できるマスターデータからなのでinnerHTMLでも許容範囲ですが、念のため）
+    const safeAttr = escapeHTML(enemy.attr);
+    document.getElementById('enemy-type').innerHTML = `<span class="badge">${safeAttr}</span>`;
+    document.getElementById('enemy-ability').textContent = escapeHTML(enemy.abi);
+}
+
 
 function setupSaveLoad(id) {
     const slotSelect = document.getElementById(`save-slot-${id}`);
