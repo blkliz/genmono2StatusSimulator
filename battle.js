@@ -666,18 +666,18 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         }
 
         let comp = getComp(enemy.attr, atkUnit.attr);
-        let baseSub = Math.max(1, Math.ceil(calcEnemyAtk * enemyAbiMultiplier) - atkUnit.currentDef);
-        
+        let atkMinusDef = calcEnemyAtk - atkUnit.currentDef;
+
         // 戦闘開始時の防具込みDでのみ計算する軽減式 (1 - 込みD/100000)
         let defenseReductionRate = Math.max(0, 1 - (atkUnit.def / 100000));
-        
-        // 基本計算に軽減率を適用
-        let finalDmg = Math.ceil(baseSub * comp * getRandomFactor() * defenseReductionRate);
-        
+
+        // (敵A - 味方D) × 敵アビ倍率 × 相性 × 乱数 × D軽減
+        let finalDmg = Math.ceil(atkMinusDef * enemyAbiMultiplier * comp * getRandomFactor() * defenseReductionRate);
+
         // 既存のダメージ軽減（凍結・突風等）を適用
         resObj.dmg = Math.max(1, Math.ceil(finalDmg * atkUnit.damageReduction));
-        
-        resObj.debugInfo += `(敵A:${Math.ceil(calcEnemyAtk * enemyAbiMultiplier)} vs 味D:${atkUnit.currentDef} = ${baseSub} ×相性:${comp} ×D軽減:${defenseReductionRate.toFixed(4)})`;
+
+        resObj.debugInfo += `(敵A:${calcEnemyAtk} vs 味D:${atkUnit.currentDef} = ${atkMinusDef} ×敵倍:${enemyAbiMultiplier} ×相性:${comp} ×D軽減:${defenseReductionRate.toFixed(4)})`;
         return resObj;
     }
 }
