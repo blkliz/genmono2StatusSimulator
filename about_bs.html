@@ -58,7 +58,7 @@
 <p>検証データおよびWikiの仕様に基づき、以下の独自ロジックを採用しています。</p>
 
 <ul style="background: #fff; padding: 15px 15px 15px 40px; border-radius: 5px; border-left: 5px solid #2c3e50; list-style-type: disc;">
-    <li style="margin-bottom: 10px;"><strong>武器グレード補正：</strong><br>グレード1につき発動率を<strong>+1.1%</strong>加算して算出します。(他シミュレータ様で1％採用を見かけますが、どちらが正解かわからないのでWiki値採用の形)</li>
+    <li style="margin-bottom: 10px;"><strong>武器グレード補正：</strong><br>グレード1につき発動率を<strong>+1.1%</strong>加算して算出します。(1％採用の情報を見かけますが、どちらが正解かわからないのでWiki値採用の形)</li>
     <li style="margin-bottom: 10px;"><strong>段階上昇アビリティ：</strong><br>「不乱」「壮健」等のHP残量依存アビリティは、％区切り値による判定ではなく<strong>線形補間</strong>で処理しています。※実機や他シミュレータ様と乖離が生じる可能性があります。</li>
     <li style="margin-bottom: 10px;"><strong>福音の予測値：</strong><br>Wikiの空白部分を <code>(200 * グレード + 200) * 強化値倍率</code> として逆算・補完しています。(※私が算出した強化値倍率　+0：1.00、+1：1.025、+2：1.05、+3：1.10、+4：1.175、+5：1.30、+6：1.45、+7：1.675、+8：1.925、+9：2.225、+10：2.60、+11：3.025、+12：3.525、+13：4.075、+14：4.70、+15：5.40、+16：6.175、+17：7.00、+18：7.925、+19：8.925、+20：10.00)</li>
     <li><strong>天晴の暫定処理：</strong><br>グレード10以外の回復量は現在不明なため、一律 <strong>2,000固定</strong> のダミーデータとして処理しています。</li>
