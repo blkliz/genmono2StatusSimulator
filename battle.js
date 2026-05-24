@@ -1,3 +1,15 @@
+/** 討伐対象の表示ラベル（datalist・検索キー用） */
+function formatEnemyLabel(enemy, displayLv) {
+    const lvPart = (enemy.lv === 'LVUP' && displayLv != null)
+        ? `Lv.${displayLv}`
+        : `Lv.${enemy.lv}`;
+    return `${lvPart}：${enemy.name}${enemy.category || ''}`;
+}
+
+function findEnemyByLabel(label) {
+    return enemies.find(e => formatEnemyLabel(e) === label);
+}
+
 window.onload = () => {
     const searchInput = document.getElementById('enemy-search');
     const dataList = document.getElementById('enemy-names');
@@ -8,19 +20,19 @@ window.onload = () => {
         dataList.innerHTML = ""; 
         enemies.forEach(enemy => {
             const option = document.createElement('option');
-            option.value = enemy.name;
+            option.value = formatEnemyLabel(enemy);
             dataList.appendChild(option);
         });
     }
 
     if (searchInput) {
         searchInput.addEventListener('change', function() {
-            const selectedEnemy = enemies.find(enemy => enemy.name === this.value);
+            const selectedEnemy = findEnemyByLabel(this.value);
             const levelArea = document.getElementById('level-selector-area');
             const lvInput = document.getElementById('enemy-level');
 
             if (selectedEnemy) {
-                if (selectedEnemy.name.startsWith('Lv.LVUP')) {
+                if (selectedEnemy.lv === 'LVUP') {
                     // LVUP対象：専用の計算ロジックへ
                     lvInput.value = 1;
                     levelArea.style.display = 'block';
@@ -30,7 +42,7 @@ window.onload = () => {
                     levelArea.style.display = 'none';
 
                     // --- 既存の反映ロジック ---
-                    document.getElementById('selected-enemy-name').textContent = escapeHTML(selectedEnemy.name);
+                    document.getElementById('selected-enemy-name').textContent = formatEnemyLabel(selectedEnemy);
                     document.getElementById('enemy-s').value = selectedEnemy.hp;
                     document.getElementById('enemy-a').value = selectedEnemy.atk;
                     document.getElementById('enemy-d').value = selectedEnemy.def;
@@ -268,19 +280,17 @@ function adjustLevel(step) {
  */
 function triggerLevelUpdate() {
     const searchVal = document.getElementById('enemy-search').value;
-    const selectedEnemy = enemies.find(e => e.name === searchVal);
+    const selectedEnemy = findEnemyByLabel(searchVal);
     const lv = parseInt(document.getElementById('enemy-level').value, 10);
 
-    if (selectedEnemy && selectedEnemy.name.startsWith('Lv.LVUP')) {
+    if (selectedEnemy && selectedEnemy.lv === 'LVUP') {
         updateStatusByMultiplier(selectedEnemy, lv);
     }
 }
 
 // レベルアップ討伐用
 function updateStatusByMultiplier(enemy, lv) {
-    // 安全にエスケープしてから表示
-    const displayName = enemy.name.replace('Lv.LVUP', `Lv.${lv}`);
-    document.getElementById('selected-enemy-name').textContent = escapeHTML(displayName);
+    document.getElementById('selected-enemy-name').textContent = formatEnemyLabel(enemy, lv);
 
     // ステータスの反映（数値なのでそのままでOK）
     document.getElementById('enemy-s').value = Math.floor(enemy.hp * lv);
@@ -698,8 +708,9 @@ function runBattle(count) {
     };
     if (!enemyRaw.name || enemyRaw.name === "---" || enemyRaw.s <= 0) return alert("敵を選択してください");
 
-    let simpleEnemyName = enemyRaw.name.split(/[：:]/)[1] || enemyRaw.name;
-    simpleEnemyName = simpleEnemyName.split('(')[0];
+    const searchVal = document.getElementById('enemy-search').value;
+    const dataEnemy = findEnemyByLabel(searchVal);
+    const simpleEnemyName = dataEnemy ? dataEnemy.name : enemyRaw.name;
 
     let winCount = 0;
 	let totalTurns = 0; // 追加：全試行の合計ターン数
