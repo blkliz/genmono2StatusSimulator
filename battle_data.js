@@ -7,7 +7,7 @@
 // (データ設計時の自分がJS初心者すぎました)
 
 const enemies = [
-    // ここにスプレッドシートのK列の内容をそのまま貼り付ける
+    // ここにスプレッドシートのO列の内容をそのまま貼り付ける
     { lv: 2,name: 'コブンネズミ',category: '(常設(Grd1))', attr: '獣', abi: '-', hp: 310, atk: 55, def: 5 },
     { lv: 3,name: 'トゲウサギ',category: '(常設(Grd1))', attr: '獣', abi: '-', hp: 445, atk: 65, def: 15 },
     { lv: 9,name: 'お化け提灯',category: '(常設(Grd1))', attr: '魔', abi: '-', hp: 800, atk: 120, def: 10 },
