@@ -70,11 +70,44 @@ let currentState = {
 
 let historyStack = [];
 const MAX_HISTORY = 15;
+const SAVE_SLOT_COUNT = 20;
+
+function getSaveSlotOptionLabel(slotNum) {
+    const prefix = `スロット ${slotNum}`;
+    const raw = localStorage.getItem(`genjyu_sim_slot_${slotNum}`);
+    if (!raw) return prefix;
+    try {
+        const parsed = JSON.parse(raw);
+        const id = parsed?.state?.id;
+        if (id === undefined || id === null) return prefix;
+        const g = genjyuMaster.find(x => x.genjyuId === id);
+        return g ? `${prefix}: ${g.genjyuName}` : prefix;
+    } catch {
+        return prefix;
+    }
+}
+
+function updateSaveSlotSelect() {
+    const select = document.getElementById('save-slot-select');
+    if (!select) return;
+    const cur = select.value;
+    select.innerHTML = '';
+    for (let n = 1; n <= SAVE_SLOT_COUNT; n++) {
+        const opt = document.createElement('option');
+        opt.value = String(n);
+        opt.textContent = getSaveSlotOptionLabel(n);
+        select.appendChild(opt);
+    }
+    if (cur && Number(cur) >= 1 && Number(cur) <= SAVE_SLOT_COUNT) {
+        select.value = cur;
+    }
+}
 
 function init() {
     if (!genjyuMaster || genjyuMaster.length === 0) return;
     setupDatalist();
     applyInitialSetup();
+    updateSaveSlotSelect();
     render();
 }
 
@@ -148,6 +181,7 @@ function quickSave() {
     const slot = document.getElementById('save-slot-select').value;
     const saveData = { state: currentState, history: historyStack, savedAt: new Date().toLocaleString() };
     localStorage.setItem(`genjyu_sim_slot_${slot}`, JSON.stringify(saveData));
+    updateSaveSlotSelect();
     alert(`スロット ${slot} に保存しました。`);
 }
 
