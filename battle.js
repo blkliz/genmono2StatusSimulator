@@ -104,6 +104,8 @@ window.onload = () => {
         }
 };
 
+const DEFAULT_EQUIP_PLUS = 20;
+
 const armorAbilityOrder = [
     "成長", "持久", "底力", "生存", "雲竜", "勇将", "闘争", "虎咆", "猛将", "猛皇",
     "浪漫", "強固", "頑固", "鉄壁", "防衛", "護鶴", "賢将", "賢皇", "激運", "天運",
@@ -208,8 +210,8 @@ function initEquipAndCards(id) {
     const ap = document.getElementById(`armor-plus-${id}`);
     const wc = document.getElementById(`weapon-ability-select-${id}`);
     const ac = document.getElementById(`armor-ability-select-${id}`);
-    if (wp) { wp.innerHTML = ""; for (let p = 0; p <= 20; p++) wp.add(new Option(`+${p}`, p)); }
-    if (ap) { ap.innerHTML = ""; for (let p = 0; p <= 20; p++) ap.add(new Option(`+${p}`, p)); }
+    if (wp) { wp.innerHTML = ""; for (let p = 0; p <= 20; p++) wp.add(new Option(`+${p}`, p)); wp.value = String(DEFAULT_EQUIP_PLUS); }
+    if (ap) { ap.innerHTML = ""; for (let p = 0; p <= 20; p++) ap.add(new Option(`+${p}`, p)); ap.value = String(DEFAULT_EQUIP_PLUS); }
     if (typeof weaponCardAbilities !== 'undefined' && wc) {
         wc.innerHTML = '<option value="">武器カード選択</option>';
         weaponCardAbilities.filter(abi => weaponAbilityOrder.includes(abi.name))
@@ -321,7 +323,17 @@ function setupSaveLoad(id) {
 
 function resetUnitData(id) {
     const fields = [`manual-name-${id}`, `manual-type-${id}`, `base-s-${id}`, `base-a-${id}`, `base-d-${id}`, `base-l-${id}`, `weapon-select-${id}`, `weapon-plus-${id}`, `weapon-ability-select-${id}`, `armor-select-${id}`, `armor-plus-${id}`, `armor-ability-select-${id}`];
-    fields.forEach(f => { const el = document.getElementById(f); if (el) { if (el.tagName === "SELECT") el.selectedIndex = 0; else el.value = ""; } });
+    fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (!el) return;
+        if (f === `weapon-plus-${id}` || f === `armor-plus-${id}`) {
+            el.value = String(DEFAULT_EQUIP_PLUS);
+        } else if (el.tagName === "SELECT") {
+            el.selectedIndex = 0;
+        } else {
+            el.value = "";
+        }
+    });
     const span = id === 1 ? document.querySelector('#unit-1 .display-unit-name') : document.getElementById(`display-name-${id}`);
     if (span) span.textContent = "未設定";
     updateRealStatus(id);
