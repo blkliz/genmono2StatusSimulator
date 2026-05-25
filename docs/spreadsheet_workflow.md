@@ -1,0 +1,113 @@
+# スプレッドシート運用
+
+このプロジェクトでは、一部データを Google Spreadsheet で管理している。
+
+---
+
+## 幻獣データ MASTER
+
+| 項目 | 内容 |
+|------|------|
+| 生成ファイル | `genjyu_data.js` |
+| 使用箇所 | ステータスシミュレータ、理論値一覧表 |
+
+**生成方式**  
+スプレッドシート関数で JS オブジェクト文字列を生成し、出力列をコピーして JS へ貼り付け。
+
+<details>
+<summary>使用関数例</summary>
+
+```
+IF(A2="", "",
+  "  { ""genjyuId"": " & A2 &
+  ", ""genjyuName"": """ & B2 &
+  """, ""genjyuType"": """ & C2 &
+  """, ""genjyuClass"": """ & D2 &
+  """, ""statusMultipliers"": { ""staminaFactor"": " & G2 &
+  ", ""attackFactor"": " & H2 &
+  ", ""defenseFactor"": " & I2 &
+  ", ""luckFactor"": " & J2 &
+  " }, ""evolutionItem"": { ""eItemName"": """ & E2 &
+  """, ""eItemRarity"": " & F2 &
+  " }, ""parentIds"": [" &
+  SUBSTITUTE(SUBSTITUTE(IF(AND(K2<>"", K2<>",,"), K2, ""), ",,", ""), ",,", "") &
+  "], ""variantIds"": [] },"
+)
+```
+
+</details>
+
+---
+
+## 討伐リスト MASTER
+
+| 項目 | 内容 |
+|------|------|
+| 生成ファイル | `battle_data.js` |
+| 使用箇所 | 討伐シミュレータ |
+
+**生成方式**  
+スプレッドシート関数で JS オブジェクト文字列を生成し、出力列をコピーして JS へ貼り付け。
+
+<details>
+<summary>使用関数例</summary>
+
+```
+" { lv: "&IF(A2="LVUP","'LVUP'",A2)&",name: '"&B2&"',category: '("&C2&")', attr: '"&SUBSTITUTE(D2,".","")&"', abi: '"&E2&"', hp: "&IF(OR(F2="?", F2=""), 0, F2)&", atk: "&IF(OR(G2="?", G2=""), 0, G2)&", def: "&IF(OR(H2="?", H2=""), 0, H2)&" },"
+```
+
+</details>
+
+---
+
+## 武器 MASTER・防具 MASTER
+
+| 項目 | 内容 |
+|------|------|
+| 生成ファイル | `item_data.js` |
+| 使用箇所 | 討伐シミュレータ |
+
+**生成方式**  
+スプレッドシート関数で JS オブジェクト文字列を生成し、出力列をコピーして JS へ貼り付け。
+
+<details>
+<summary>使用関数例</summary>
+
+武器 MASTER
+```
+"  { name: '"&A29&"', abi: '"&B29&"', atk: "&D29&", grade: "&E29&", kind: 1 },"
+```
+
+防具 MASTER
+```
+"  { name: '"&A37&"', abi: '"&B37&"', def: "&D37&", grade: "&E37&", kind: 2 },"
+```
+
+</details>
+
+---
+
+## 武器アビリティ MASTER・防具アビリティ MASTER
+
+| 項目 | 内容 |
+|------|------|
+| 生成ファイル | `ability_data.js` |
+| 使用箇所 | 討伐シミュレータ |
+
+**生成方式**  
+スプレッドシート関数で JS オブジェクト文字列を生成し、出力列をコピーして JS へ貼り付け。
+
+<details>
+<summary>使用関数例</summary>
+
+武器アビリティ MASTER
+```
+"  { name: '"&B3&"', kind: 1 },"
+```
+
+防具アビリティ MASTER
+```
+"  { name: '"&B2&"', kind: 2 },"
+```
+
+</details>
