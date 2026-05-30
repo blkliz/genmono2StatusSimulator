@@ -1,8 +1,12 @@
-/* main.js v0.3.16 */
+/* main.js v0.4.16 */
+
+// --- 定数・マスタ参照 ---
 
 let genjyuMaster = (typeof GENJYU_DATA !== 'undefined') ? GENJYU_DATA : [];
 
 const MANUAL_NAME_MAX_LEN = 120;
+
+// --- 入力検証・サニタイズ ---
 
 function toSafeNonNegInt(v, fallback) {
     const n = Number(v);
@@ -60,6 +64,8 @@ function sanitizeManualGenjyuName(name) {
     return t.length > MANUAL_NAME_MAX_LEN ? t.slice(0, MANUAL_NAME_MAX_LEN) : t;
 }
 
+// --- アプリ状態 ---
+
 let currentState = {
     id: 0, 
     lv: 1, 
@@ -71,6 +77,8 @@ let currentState = {
 let historyStack = [];
 const MAX_HISTORY = 15;
 const SAVE_SLOT_COUNT = 20;
+
+// --- 永続化（localStorage） ---
 
 function getSaveSlotOptionLabel(slotNum) {
     const prefix = `スロット ${slotNum}`;
@@ -103,6 +111,8 @@ function updateSaveSlotSelect() {
     }
 }
 
+// --- UI初期化 ---
+
 function init() {
     if (!genjyuMaster || genjyuMaster.length === 0) return;
     setupDatalist();
@@ -121,6 +131,8 @@ function setupDatalist() {
         datalist.appendChild(option);
     });
 }
+
+// --- 状態初期化・手動入力 ---
 
 function applyInitialSetup() {
     currentState.id = 0;
@@ -177,6 +189,8 @@ function applyManualInput() {
     alert("反映しました。");
 }
 
+// --- 永続化（クイックセーブ・ロード） ---
+
 function quickSave() {
     const slot = document.getElementById('save-slot-select').value;
     const saveData = { state: currentState, history: historyStack, savedAt: new Date().toLocaleString() };
@@ -207,10 +221,15 @@ function quickLoad() {
     render();
 }
 
+// --- ゲームルール（転生・Lv・進化・ポイント） ---
+
+//転生ボーナス
 function getReincBonusSp(count) {
     const bonusMap = [0, 30, 40, 50, 60, 70, 80, 90, 100];
     return (count >= 9) ? 110 : (bonusMap[count] || 0);
 }
+
+// --- 履歴（Undo） ---
 
 function saveHistory() {
     const historyItem = JSON.parse(JSON.stringify(currentState));
@@ -314,6 +333,8 @@ function changeVal(type, diff) {
 
 function getLevelLimit() { return (currentState.reincCount >= 8) ? 250 : 200; }
 
+// --- UI部品 ---
+
 function createEvolutionButton(genjyu, isSpecial = false) {
     const btn = document.createElement('button');
     btn.className = 'evolve-btn';
@@ -337,6 +358,8 @@ function createEvolutionButton(genjyu, isSpecial = false) {
     if (subDiv.textContent) btn.appendChild(subDiv);
     return btn;
 }
+
+// --- UI描画 ---
 
 function render() {
     try {
@@ -458,5 +481,7 @@ genjyuMaster.filter(g => {
         }
     } catch (e) { console.error(e); }
 }
+
+// --- エントリポイント ---
 
 window.onload = init;

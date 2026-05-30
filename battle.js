@@ -1,3 +1,5 @@
+// --- 敵マスタ参照 ---
+
 /** 討伐対象の表示ラベル（datalist・検索キー用） */
 function formatEnemyLabel(enemy, displayLv) {
     const lvPart = (enemy.lv === 'LVUP' && displayLv != null)
@@ -9,6 +11,8 @@ function formatEnemyLabel(enemy, displayLv) {
 function findEnemyByLabel(label) {
     return enemies.find(e => formatEnemyLabel(e) === label);
 }
+
+// --- エントリポイント ---
 
 window.onload = () => {
     const searchInput = document.getElementById('enemy-search');
@@ -104,6 +108,8 @@ window.onload = () => {
         }
 };
 
+// --- 定数・マスタテーブル ---
+
 const DEFAULT_EQUIP_PLUS = 20;
 
 const armorAbilityOrder = [
@@ -137,6 +143,9 @@ const attributeCompatibility = {
     "龍": { "無": 1.4, "地": 0.7 }
 };
 
+// 聖なる福音（福音）回復量テーブル
+// 縦軸: 強化値(+0〜+20) / 横軸: グレード(G1〜G10)
+// グレード3,4,6は逆算による独自補完データ
 const fukuinTable = [
     [400,600,800,1000,1200,1400,1600,1800,2000,2200],
     [410,600,800,1000,1210,1400,1610,1810,2020,2220],
@@ -163,7 +172,7 @@ const fukuinTable = [
 
 // 天晴す陽光（天晴）回復量テーブル
 // 縦軸: 強化値(+0〜+20) / 横軸: グレード(G1〜G10)
-//グレード10以外のグレードはダミーデータ
+// グレード10以外のグレードはダミーデータ
 const tenharasuTable = [
     [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000], // +0
     [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2010], // +1
@@ -187,6 +196,8 @@ const tenharasuTable = [
     [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 17440], // +19
     [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 20000]  // +20
 ];
+
+// --- UI初期化（装備・ユニット） ---
 
 function initEquipDatalists() {
     const wList = document.getElementById('weapon-names');
@@ -244,6 +255,8 @@ function setupValidation(id) {
     });
 }
 
+// --- ユーティリティ ---
+
 function escapeHTML(str) {
     if (!str) return "";
     return str.toString()
@@ -253,6 +266,8 @@ function escapeHTML(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+// --- 敵Lv・ステ更新 ---
 
 /**
  * レベルを増減させ、再計算を行う関数
@@ -305,6 +320,7 @@ function updateStatusByMultiplier(enemy, lv) {
     document.getElementById('enemy-ability').textContent = escapeHTML(enemy.abi);
 }
 
+// --- ユニット永続化（localStorage） ---
 
 function setupSaveLoad(id) {
     const slotSelect = document.getElementById(`save-slot-${id}`);
@@ -396,6 +412,8 @@ function updateLoadSelect(id) {
     });
     select.value = cur;
 }
+
+// --- ステ計算（装備・能力） ---
 
 function updateRealStatus(id) {
     const getV = (eid) => Math.max(0, Math.floor(Number(document.getElementById(eid)?.value) || 0));
@@ -526,6 +544,8 @@ function getUnitState(id) {
         damageReduction: 1.0
     };
 }
+
+// --- 戦闘エンジン ---
 
 function getComp(atkAttr, defAttr) {
     return attributeCompatibility[atkAttr]?.[defAttr] || 1.0;
@@ -853,6 +873,8 @@ function runBattle(count) {
 	    }
 
 }
+
+// --- データ入出力・リセット ---
 
 function systemReset() { if (confirm("入力をリセットしますか？")) location.reload(); }
 

@@ -1,6 +1,8 @@
 /**
- * theory_calc.js - 理論値計算エンジン v0.1.10
+ * theory_calc.js - 理論値計算 v0.1.10
  */
+
+// --- 定数・モジュール状態 ---
 
 const SEARCH_NAME_MAX_LEN = 120;
 
@@ -15,10 +17,14 @@ function escapeHtml(s) {
         .replace(/'/g, '&#39;');
 }
 
+//選択中の極保持
 let currentTarget = 'a';
 let sortKey = 'a';
 let sortDesc = true;
+
+//LvUpによるポイント加算上限(+249*2)
 const LV_SP = 498;
+//転生ボーナス
 const TRANS_BONUS = 110; 
 
 let memoPathBonus = {};
@@ -31,6 +37,8 @@ let modalHistory = ""; // 履歴保存用
 /** openDetailModal 内「R」ボタン用：ルート配列の退避 */
 let lastDetailRouteVariants = [];
 let lastDetailModalGenjyuId = null;
+
+// --- マスタ索引 ---
 
 function ensureGenjyuIndex() {
     if (genjyuById && genjyuByName) return;
@@ -56,6 +64,8 @@ function getNodeGenjyu(node) {
     if (node && node.id !== undefined && node.id !== null) return getGenjyuById(node.id);
     return getGenjyuByName(node ? node.name : "");
 }
+
+// --- 純粋計算（pt・ステ）・ルート探索 ---
 
 function sumPathBonus(path, type) {
     return path.reduce((sum, node) => {
@@ -237,6 +247,8 @@ function calcTheoryPt(routeBonus, finalPathBonus, isTarget) {
     return 5 + finalPathBonus + sp + finalCarryOver;
 }
 
+// --- 一覧UI ---
+
 function updateTypeFilterOptions() {
     const typeSelect = document.getElementById('filter-type');
     if (!typeSelect) return;
@@ -358,6 +370,8 @@ function render() {
         </tr>
     `).join('');
 }
+
+// --- モーダルUI ---
 
 function openRouteModal(genjyuId, type) {
     const genjyu = getGenjyuById(genjyuId);
@@ -569,6 +583,8 @@ function restoreModal() {
     }
 }
 
+// --- 極・ソート ---
+
 function changeTarget(t) {
     currentTarget = t;
     sortKey = t;
@@ -583,6 +599,8 @@ function setSort(key) {
     else { sortKey = key; sortDesc = true; }
     render();
 }
+
+// --- エントリポイント ---
 
 window.onload = () => {
     updateTypeFilterOptions();
