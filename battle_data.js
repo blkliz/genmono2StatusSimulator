@@ -559,8 +559,12 @@ const enemies = [
     { lv: 80,name: '弱った電気羊',category: '(イベント限定フリー討伐)', attr: '地', abi: '-', hp: 32100, atk: 3300, def: 1500 },
     { lv: 120,name: '夢見る電気羊',category: '(雷帯石)', attr: '地', abi: '高揚', hp: 40200, atk: 4500, def: 2800 },
     { lv: 160,name: '夢見る電気羊',category: '(雷帯石)', attr: '地', abi: '高揚', hp: 101600, atk: 6500, def: 4000 },
-    { lv: 220,name: '夢見る電気羊',category: '(雷帯石)', attr: '地', abi: '高揚', hp: 194400, atk: 18180, def: 7000 }
-
+    { lv: 220,name: '夢見る電気羊',category: '(雷帯石)', attr: '地', abi: '高揚', hp: 194400, atk: 18180, def: 7000 },
+    { lv: 250,name: '破壊神・狂痕',category: '(醒曲♪純然たる破壊)', attr: '魔', abi: '粉砕', hp: 1593900, atk: 250300, def: 30 },
+ { lv: 250,name: '春芳スケイプドラゴン',category: '(醒曲♪春告げの桃毛)', attr: '地', abi: '強打', hp: 4072300, atk: 10000, def: 5000 },
+ { lv: 250,name: '伏姫・八徳',category: '(醒曲♪集いし八徳)', attr: '獣', abi: '高揚', hp: 74200, atk: 1000, def: 1000000 },
+ { lv: 100,name: 'モノクロの幻獣',category: '(イベント限定フリー討伐)', attr: '無', abi: '-', hp: 37400, atk: 3010, def: 3000 },
+ { lv: 80,name: 'ルフルン',category: '(リコメル)', attr: '無', abi: '-', hp: 38700, atk: 1600, def: 1800 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。

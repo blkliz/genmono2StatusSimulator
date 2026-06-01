@@ -977,7 +977,10 @@ const GENJYU_DATA = [
   { "genjyuId": 975, "genjyuName": "子泣き爺", "genjyuType": "獣", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 29.7, "attackFactor": 10.6, "defenseFactor": 14.4, "luckFactor": 1 }, "evolutionItem": { "eItemName": "起き上がらずこぼし", "eItemRarity": 5 }, "parentIds": [,71,], "variantIds": [] },
   { "genjyuId": 976, "genjyuName": "太公望", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30.5, "attackFactor": 24.88, "defenseFactor": 14, "luckFactor": 1 }, "evolutionItem": { "eItemName": "太極天命印", "eItemRarity": 7 }, "parentIds": [,956,], "variantIds": [] },
     { "genjyuId": 977, "genjyuName": "穢心の業・レイラク", "genjyuType": "魔", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 31.1, "attackFactor": 17.15, "defenseFactor": 11.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "貪欲の望攫", "eItemRarity": 6 }, "parentIds": [,835,], "variantIds": [] },
-    { "genjyuId": 978, "genjyuName": "夢見る電気羊", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 33, "attackFactor": 18, "defenseFactor": 10.4, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "残光の核石", "eItemRarity": 6 }, "parentIds": [,955,], "variantIds": [] }
+    { "genjyuId": 978, "genjyuName": "夢見る電気羊", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 33, "attackFactor": 18, "defenseFactor": 10.4, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "残光の核石", "eItemRarity": 6 }, "parentIds": [,955,], "variantIds": [] },
+    { "genjyuId": 979, "genjyuName": "超☆ステラ☆ディーヴァ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 45, "attackFactor": 15.6, "defenseFactor": 23.8, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ステローナ☆ライブ", "eItemRarity": 7 }, "parentIds": [,258,371,632,], "variantIds": [] },
+  { "genjyuId": 984, "genjyuName": "ルフルン", "genjyuType": "無", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 38.85, "attackFactor": 12.2, "defenseFactor": 10.85, "luckFactor": 1 }, "evolutionItem": { "eItemName": "からふるばっかる", "eItemRarity": 5 }, "parentIds": [,554,798,], "variantIds": [] }
+
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
 //前回更新時の末尾にカンマないことも注意。
