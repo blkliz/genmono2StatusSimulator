@@ -564,7 +564,8 @@ const enemies = [
  { lv: 250,name: '春芳スケイプドラゴン',category: '(醒曲♪春告げの桃毛)', attr: '地', abi: '強打', hp: 4072300, atk: 10000, def: 5000 },
  { lv: 250,name: '伏姫・八徳',category: '(醒曲♪集いし八徳)', attr: '獣', abi: '高揚', hp: 74200, atk: 1000, def: 1000000 },
  { lv: 100,name: 'モノクロの幻獣',category: '(イベント限定フリー討伐)', attr: '無', abi: '-', hp: 37400, atk: 3010, def: 3000 },
- { lv: 80,name: 'ルフルン',category: '(リコメル)', attr: '無', abi: '-', hp: 38700, atk: 1600, def: 1800 }
+ { lv: 80,name: 'ルフルン',category: '(リコメル)', attr: '無', abi: '-', hp: 38700, atk: 1600, def: 1800 },
+  { lv: 130,name: 'モノクロの幻獣',category: '(イベント限定フリー討伐)', attr: '獣', abi: '-', hp: 71800, atk: 4500, def: 2500 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
