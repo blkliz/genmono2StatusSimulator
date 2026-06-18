@@ -580,12 +580,13 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         }
         resObj.abi = selectedAbi;
 
+        // 修正箇所2：「一斉」アビリティ用
         if (selectedAbi === "一斉") {
             let total = 0;
             allUnits.forEach(u => {
                 if (!u.isDead) {
-                    let baseSub = Math.max(1, u.currentAtk - enemy.def);
-                    let val = Math.ceil(baseSub * getComp(u.attr, enemy.attr));
+                    let baseSub = u.currentAtk - enemy.def;
+                    let val = Math.max(1, Math.ceil(baseSub * getComp(u.attr, enemy.attr)));
                     total += val;
                 }
             });
@@ -646,8 +647,9 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
             resObj.dmg = 0;
             resObj.debugInfo += `(行動:${selectedAbi})`;
         } else {
-            let baseSub = Math.max(1, calcAtk - enemy.def);
-            let val = Math.ceil(baseSub * weaponAbiMultiplier);
+            // ダメージ計算順序(最低保証)調整に注意
+                let baseSub = calcAtk - enemy.def;
+                let val = Math.max(1, Math.ceil(baseSub * weaponAbiMultiplier));
             resObj.debugInfo += `(${atkUnit.attr}A:${calcAtk} vs ${enemy.attr}D:${enemy.def} = ${baseSub}×倍:${weaponAbiMultiplier})`;
 
             if (selectedAbi === "和属") {
