@@ -236,9 +236,25 @@ function getDetailPathVariants(genjyuId, type) {
     return result;
 }
 
+
+/**
+ * 転生を挟んだ最終理論値ptの算出
+ * * 【仕様ノート】
+ * 転生時にptの1/10が引き継がれる仕様上、数回の転生（ループ）で過去の影響は収束します。
+ * 現在のゲーム環境では、理論値総ptが1000未満であるため、4回のループ（1/10000減衰）で
+ * 端数切り上げ（Math.ceil）を含めた「飽和理論値」が完全に保証されます。
+ * * 【将来の改修指針】
+ * 万が一、将来のアップデート等で総ptが5桁（10000以上）にインフレした場合、
+ * 過去の影響を1未満に落としきるために、ループ回数を「5」や「6」に引き上げる必要があります。
+ * * @param {number} routeBonus 前世となる最高個体のルートボーナスpt
+ * @param {number} finalPathBonus 当世（この幻獣自体）のルートボーナスpt
+ * @param {boolean} isTarget メイン極のステータスか否か
+ * @returns {number} 収束・飽和した最終理論値pt
+ */
 function calcTheoryPt(routeBonus, finalPathBonus, isTarget) {
     const sp = isTarget ? (TRANS_BONUS + LV_SP) : 0;
     let currentPt = 5 + routeBonus + sp;
+    //4回ループ設定箇所
     for (let i = 0; i < 4; i++) {
         let carryOver = Math.ceil(currentPt / 10);
         currentPt = 5 + routeBonus + sp + carryOver;
@@ -288,7 +304,7 @@ function render() {
         }
     });
 
-    // 2. その「極の王」が各ステータスで持っている当世ptを算出。これを転生繰り越しのベースにする
+    // 2. その「極の最高峰」が各ステータスで持っている当世ptを算出。これを転生繰り越しのベースにする
     //const basePointsForCarryOver = { s: 0, a: 0, d: 0 };
     if (maxGenjyuForTarget) {
         const kingRoute = getMaxPathBonus(maxGenjyuForTarget.genjyuId, currentTarget);
@@ -323,7 +339,7 @@ function render() {
                 pathPt = sumPathBonus(fixedRoute.path, type);
             }
 
-            // 4. 前世として「極の王」の該当ステータスpt（basePointsForCarryOver）を渡して算出
+            // 4. 前世として「極の最高峰」の該当ステータスpt（basePointsForCarryOver）を渡して算出
             const totalPt = calcTheoryPt(
                 basePointsForCarryOver[type] || 0, 
                 pathPt, 
