@@ -734,8 +734,8 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
             return resObj;
         }
 
-        // 戦闘開始時の防具込みDでのみ計算する軽減式 (1 - 込みD/100000)
-        let defenseReductionRate = Math.max(0, 1 - (atkUnit.def / 100000));
+        // 防具込みDでのみ計算する軽減式 (1 - 込みD/100000)：粉砕の影響を受ける
+        let defenseReductionRate = Math.max(0, 1 - (atkUnit.currentDef / 100000));
 
         // (敵A - 味方D) × 敵アビ倍率 × 相性 × 乱数 × D軽減
         let finalDmg = Math.ceil(atkMinusDef * enemyAbiMultiplier * comp * getRandomFactor() * defenseReductionRate);
