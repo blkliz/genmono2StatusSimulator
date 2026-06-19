@@ -580,17 +580,22 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         }
         resObj.abi = selectedAbi;
 
-        // 修正箇所2：「一斉」アビリティ用
+        // 仕様要精査：「一斉」
         if (selectedAbi === "一斉") {
             let total = 0;
             allUnits.forEach(u => {
                 if (!u.isDead) {
                     let baseSub = u.currentAtk - enemy.def;
-                    let val = Math.max(1, Math.ceil(baseSub * getComp(u.attr, enemy.attr)));
+                    // ループ内では最低保証を適用せず、マイナスの状態も維持して倍率計算を行う
+                    let val = Math.ceil(baseSub * getComp(u.attr, enemy.attr));
                     total += val;
                 }
             });
-            resObj.dmg = Math.ceil(total * getRandomFactor());
+            // 乱数を掛けた最終値を算出
+            let finalTotal = Math.ceil(total * getRandomFactor());
+            
+            // すべての計算が終わった結果が0以下（全体で貫通できていない）なら最低保証の1にする
+            resObj.dmg = Math.max(1, finalTotal);
             return resObj;
         }
 
@@ -647,10 +652,11 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
             resObj.dmg = 0;
             resObj.debugInfo += `(行動:${selectedAbi})`;
         } else {
-            // ダメージ計算順序(最低保証)調整に注意
-                let baseSub = calcAtk - enemy.def;
-                let val = Math.max(1, Math.ceil(baseSub * weaponAbiMultiplier));
-            resObj.debugInfo += `(${atkUnit.attr}A:${calcAtk} vs ${enemy.attr}D:${enemy.def} = ${baseSub}×倍:${weaponAbiMultiplier})`;
+            let baseSub = calcAtk - enemy.def;
+            
+            // 基礎ダメージ（Dを引いた時点では最低保証を入れず、マイナスのまま倍率計算へ回す）
+            let val = Math.ceil(baseSub * weaponAbiMultiplier);
+            resObj.debugInfo += `(${atkUnit.attr}A:${calcAtk} vs ${enemy.attr}D:${enemy.def} = ${baseSub}→アビ倍率後:${val})`;
 
             if (selectedAbi === "和属") {
                 allUnits.forEach(u => {
@@ -679,7 +685,15 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
                     }
                 }
             }
-            resObj.dmg = Math.ceil(val * getRandomFactor());
+
+            // 乱数を掛ける
+            let finalDmg = Math.ceil(val * getRandomFactor());
+
+            // 【最終判定】すべての計算が終わった結果が0以下（貫通できていない）なら最低保証の1にする
+            resObj.dmg = Math.max(1, finalDmg);
+            if (finalDmg <= 0) {
+                resObj.debugInfo += `(※最終0以下のため最低保証1適用)`;
+            }
         }
         return resObj;
     } else {
@@ -713,6 +727,13 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         let comp = getComp(enemy.attr, atkUnit.attr);
         let atkMinusDef = calcEnemyAtk - atkUnit.currentDef;
 
+        // 味方と異なり、敵はDをAで貫通できていない（0以下）場合はダメージ0で確定させる
+        if (atkMinusDef <= 0) {
+            resObj.dmg = 0;
+            resObj.debugInfo += `(敵A:${calcEnemyAtk} vs 味D:${atkUnit.currentDef} = D貫通せず:0)`;
+            return resObj;
+        }
+
         // 戦闘開始時の防具込みDでのみ計算する軽減式 (1 - 込みD/100000)
         let defenseReductionRate = Math.max(0, 1 - (atkUnit.def / 100000));
 
@@ -720,7 +741,7 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
         let finalDmg = Math.ceil(atkMinusDef * enemyAbiMultiplier * comp * getRandomFactor() * defenseReductionRate);
 
         // 既存のダメージ軽減（凍結・突風等）を適用
-        resObj.dmg = Math.max(1, Math.ceil(finalDmg * atkUnit.damageReduction));
+        resObj.dmg = Math.max(0, Math.ceil(finalDmg * atkUnit.damageReduction));
 
         resObj.debugInfo += `(敵A:${calcEnemyAtk} vs 味D:${atkUnit.currentDef} = ${atkMinusDef} ×敵倍:${enemyAbiMultiplier} ×相性:${comp} ×D軽減:${defenseReductionRate.toFixed(4)})`;
         return resObj;
