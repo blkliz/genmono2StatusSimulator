@@ -981,6 +981,7 @@ const GENJYU_DATA = [
     { "genjyuId": 979, "genjyuName": "超☆ステラ☆ディーヴァ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 45, "attackFactor": 15.6, "defenseFactor": 23.8, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ステローナ☆ライブ", "eItemRarity": 7 }, "parentIds": [,258,371,632,], "variantIds": [] },
     { "genjyuId": 980, "genjyuName": "烈華に舞いし竜扇陽", "genjyuType": "地", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 51.6, "attackFactor": 16.5, "defenseFactor": 19, "luckFactor": 1.1 }, "evolutionItem": { "eItemName": "大輪の瑠嬋華", "eItemRarity": 7 }, "parentIds": [,291,], "variantIds": [] },
   { "genjyuId": 981, "genjyuName": "褪せぬ狐憶の双尾", "genjyuType": "獣", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 53.35, "attackFactor": 19.9, "defenseFactor": 15.6, "luckFactor": 1 }, "evolutionItem": { "eItemName": "暁宵の幼尾", "eItemRarity": 7 }, "parentIds": [,346,350,], "variantIds": [] },
+  { "genjyuId": 982, "genjyuName": "彩宙色の番双竜", "genjyuType": "龍", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40.8, "attackFactor": 22.2, "defenseFactor": 18.2, "luckFactor": 2.1 }, "evolutionItem": { "eItemName": "幻層の遊庭", "eItemRarity": 7 }, "parentIds": [,598,599,], "variantIds": [] },
   { "genjyuId": 984, "genjyuName": "ルフルン", "genjyuType": "無", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 38.85, "attackFactor": 12.2, "defenseFactor": 10.85, "luckFactor": 1 }, "evolutionItem": { "eItemName": "からふるばっかる", "eItemRarity": 5 }, "parentIds": [,554,798,], "variantIds": [] }
 
 
