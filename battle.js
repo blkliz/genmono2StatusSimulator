@@ -110,6 +110,20 @@ window.onload = () => {
 
 // --- 定数・マスタテーブル ---
 
+/*
+ * 【設計解説・定数ファイル分離方針（KB-GEN2-006）】
+ * 本ファイルでハードコードされている戦闘用の定数やマスタデータ（テーブル値）は、シミュレーションロジックの可読性向上と、
+ * 戦闘ルールの変更に対する保守性を高めるため、将来的に戦闘専用の定数ファイル `battle_constants.js` に切り出します。
+ * 切り出し対象となるデータは以下の通りです：
+ * 1. `DEFAULT_EQUIP_PLUS` (装備のデフォルト強化値、現状20)
+ * 2. アビリティソート順序定義: `armorAbilityOrder`, `weaponAbilityOrder`
+ * 3. アビリティ基本発動確率: `abilityBaseRates`
+ * 4. 属性相性係数: `attributeCompatibility`
+ * 5. 福音・天晴の回復量テーブル: `fukuinTable`, `tenharasuTable`
+ *
+ * この切り出しにより、戦闘計算エンジン（`runBattle` / `calculateDamage`）が純粋なプログラムロジックに集中できるようになります。
+ */
+
 const DEFAULT_EQUIP_PLUS = 20;
 
 const armorAbilityOrder = [
@@ -437,6 +451,14 @@ function updateRealStatus(id) {
         let tempBaseA = { s, a, d, l };
         let res = applyAbilityEffect(aData.abi, s, a, d, l, aPlus, tempBaseA);
         s = res.s; a = res.a; d = res.d; l = res.l;
+        /*
+         * 【設計解説 / コピペ構造の現状維持】
+         * 防具アビリティの適用（`aData.abi`）と防具カードアビリティの適用（`aCard`）で、ほぼ同じコードが重複して記述されています。
+         * ループ化などによる共通化も可能ですが、将来的に「防具そのものにのみ適用されるロジック（装備自体の耐久度や特性）」や、
+         * 「カードスロットにのみ適用される制限ロジック」など、防具とカードで個別の仕様分岐が発生する可能性を考慮し、
+         * 拡張性を担保するために【意図的に共通化せずコピペのまま記述】しています。
+         * リファクタリングによる共通化は行わないでください。
+         */
         if (aCard) {
             let tempBaseC = { s, a, d, l };
             let resC = applyAbilityEffect(aCard, s, a, d, l, aPlus, tempBaseC);
@@ -637,9 +659,26 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
             case "盟旗": 
                 resObj.buff = { target: "all", stat: "atk", rate: 1.1 }; 
                 break;
+            /*
+             * 【仕様解説・将来の改修方針（KB-GEN2-001）】
+             * 割合回復アビリティ（回復・癒唄・爽活）の回復量は、本家ゲーム仕様において「発動した幻獣の最大HP（Stamina）」ではなく、
+             * 「回復を受ける対象（味方それぞれ）の最大HP（S）」を基準に算出されます（例：癒唄なら各対象の最大HPの30%）。
+             * 現行のロジックは、便宜的に発動者である `atkUnit.maxS` を基準に一律で `resObj.heal` を算出してしまっており、仕様と異なります。
+             * 本課題（KB-GEN2-001）の改修時には、ここでの一律の `heal` 計算は行わず（あるいは回復割合のみを返す形にし）、
+             * `runBattle` の生存者回復ループ内で各ユニット（`un`）の `maxS` を用いて個別に回復量を計算する形に修正します。
+             */
             case "回復": resObj.heal = Math.ceil(atkUnit.maxS * 0.15); break;
             case "癒唄": resObj.heal = Math.ceil(atkUnit.maxS * 0.30); break;
             case "爽活": resObj.heal = Math.ceil(atkUnit.maxS * 0.20); resObj.revive = true; break;
+            /*
+             * 【仕様解説・安全対策方針（KB-GEN2-002）】
+             * 装備品（武器）の強化値（`wPlus`）とグレード（`wGrade`）をインデックスとして、回復量テーブル（`fukuinTable` / `tenharasuTable`）を参照しています。
+             * 本家仕様上、敵が回復アビリティ（福音・天晴）を使用することはありませんが、攻撃ユニット（`atkUnit`）に装備データ（`wPlus` / `wGrade`）が
+             * 定義されていない（`undefined` や `null` の）場合、テーブル参照時に `TypeError: Cannot read properties of undefined` で
+             * スクリプト全体がクラッシュする脆弱性を含んでいます。
+             * 現状の挙動（仕様）に影響を与えずに安全性を担保するため、本課題（KB-GEN2-002）の改修において、インデックスの存在チェックと
+             * 範囲外アクセスを防止するガードコード（デフォルト値への安全なフォールバック）を導入します。
+             */
             case "福音": resObj.heal = fukuinTable[atkUnit.wPlus][atkUnit.wGrade-1] || 400; resObj.revive = true; break;
             case "天晴":
 				resObj.heal = tenharasuTable[atkUnit.wPlus][atkUnit.wGrade - 1] || 2000;                resObj.revive = true; 
@@ -748,6 +787,14 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
     }
 }
 
+/*
+ * 【設計解説・現状維持の決定】
+ * 本関数 `runBattle` は、HTMLの画面入力値（DOM）を直接読み込み、シミュレーションを実行し、
+ * 結果を直接 DOM (`logEl.innerHTML`) に書き出す設計になっています。
+ * 本来は「シミュレーションの純粋な計算処理（ビジネスロジック）」と「UI制御（DOM操作）」を分離（MVC/MVVM化）し、
+ * ロジック単体でテスト可能な構造にすることが望ましいですが、改修規模と影響が極めて大きいため、
+ * 現行 of HTML/JS 直結アプローチのまま現状維持とします。構造変更は行わないでください。
+ */
 function runBattle(count) {
     const logEl = document.getElementById('battle-log');
     if (logEl) { logEl.innerHTML = "討伐準備中..."; logEl.style.fontFamily = "inherit"; }
@@ -811,9 +858,23 @@ function runBattle(count) {
 		    units.forEach(un => {
 		        if (!un.isDead) {
 		            // 生存者は通常通り回復
+                    /*
+                     * 【仕様解説・将来の改修方針（KB-GEN2-001）】
+                     * 生存者への回復適用処理です。
+                     * 現行の `un.s = Math.min(un.maxS, un.s + resE.heal)` によって、回復後の現在値自体は最大HP（S上限）で正しくクランプされています。
+                     * しかし、回復基準値（分母）が発動者基準の一律データ（`resE.heal`）になっているため、各味方の最大HPに応じた個別計算になっていません。
+                     * 本課題（KB-GEN2-001）の改修において、`calculateDamage` 側の戻り値（割合）をベースに、ループ内で個別に回復量を算出して加算する構造に変更します。
+                     */
 		            un.s = Math.min(un.maxS, un.s + resE.heal);
 		        } else if (resE.revive) {
 		            // 死亡者はここで蘇生（バフ判定の前に isDead を false にする）
+                    /*
+                     * 【仕様解説・将来の改修方針（KB-GEN2-006）】
+                     * 蘇生処理（`resE.revive`）の仕様です。
+                     * 現在、蘇生時のHP設定が「天晴なら `resE.heal` (テーブル値)、それ以外は1」という暫定的な実装になっています。
+                     * 本来のゲーム仕様では「蘇生時も最大HPの◯%で復活」あるいは「定数」などのルールがあるため、
+                     * 本課題（KB-GEN2-006）において、蘇生後のHP値を正しく定義・適用するようロジックを精査します。
+                     */
 		            un.isDead = false;
 		            // 天晴ならテーブル値、それ以外は1
 		            // 修正点: 天晴の場合も Math.min を使い、最大HPを超えないように制御する
@@ -840,6 +901,15 @@ function runBattle(count) {
 		}
                 enemy.s -= resE.dmg;
                 if (needDetail) {
+                    /*
+                     * 【仕様解説・セキュリティ対策方針（KB-GEN2-003）】
+                     * 戦闘ログの HTML（`battleSummary`）を構築して `logEl.innerHTML` に流し込む処理です。
+                     * 幻獣名（`u.name`）や敵名（`simpleEnemyName`）は `escapeHTML` でサニタイズされていますが、
+                     * アビリティ名（`resE.abi` や `resU.abi`）が未エスケープのまま埋め込まれています。
+                     * アビリティ名はマスタデータ定義であるため現在は安全ですが、将来的にカスタムアビリティなどの自由入力項目が
+                     * 導入された場合に XSS（クロスサイトスクリプティング）の脆弱性となるため、
+                     * 本課題（KB-GEN2-003）の改修においてアビリティ名も `escapeHTML(resE.abi)` で囲うように改修を行います。
+                     */
                     battleSummary += `<small style="color:#888">${resE.debugInfo}</small><br>`;
                     if (resE.heal > 0) {
                     // mapの中で un.name をエスケープ
@@ -859,6 +929,14 @@ function runBattle(count) {
                 if (resU.debuff && resU.debuff.target === "unit_target") {
                     u.currentDef = Math.ceil(u.currentDef * resU.debuff.rate);
                 }
+                /*
+                 * 【仕様解説・現状維持の決定】
+                 * 敵の反撃時に「高揚」や「紅舞」が発動した場合、攻撃力が1.1倍にバフされ、`enemy.atk` が直接更新されます。
+                 * 味方の行動ループ（最大4人分）の中で毎回の反撃に対して判定されるため、1ターンの間にバフが複利的に何重にも累積する挙動となります。
+                 * これは一般的なターン制ゲームのバフ仕様とは異なりますが、「高揚・紅舞はバフが複利的にかかること（バフをかけてから殴る）がアビリティ最大の特徴」であるという
+                 * 本家ゲーム仕様に忠実に基づいた【想定通りの正常な挙動】です。
+                 * したがって、この累積バフ処理はバグではないため、バフのクリア処理や重複防止処理などを追加してはいけません。
+                 */
                 if (resU.abi === "高揚") {
                     enemy.atk = Math.ceil(enemy.atk * 1.1);
                 }

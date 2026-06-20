@@ -2,6 +2,19 @@
 
 // --- 定数・マスタ参照 ---
 
+/*
+ * 【設計解説・定数ファイル分離方針（KB-GEN2-006 / KB-GEN2-004）】
+ * 本シミュレータ（main.js）と理論値計算（theory_calc.js）で共通して使用するゲーム仕様の定数および計算ロジックは、
+ * 将来のクリーンアップフェーズにて `sim_constants.js` という共通の定数ファイルに分離・一元管理する計画です。
+ * 本ファイルから分離予定の項目は以下の通りです：
+ * 1. 転生ボーナスポイント算出ロジック: `getReincBonusSp()` (KB-GEN2-004)
+ * 2. レベル上限判定ロジック: `getLevelLimit()` および関連する閾値定数（200 / 250）
+ * 3. 状態初期化時の初期値（初期SP=5など）
+ *
+ * 分離後は、HTML側で `sim_constants.js` を本スクリプトより前にロードするか、ESモジュールによるインポート等で参照します。
+ * この共通化により、将来の上限解放や仕様変更時の修正箇所を1箇所に集約します。
+ */
+
 let genjyuMaster = (typeof GENJYU_DATA !== 'undefined') ? GENJYU_DATA : [];
 
 const MANUAL_NAME_MAX_LEN = 120;
@@ -313,6 +326,12 @@ function evolveTo(targetId) {
         currentState.lv = Math.min(currentState.lv + lvAdd, maxLv);
         currentState.remainPt += ((currentState.lv - prevLv) * 2);
         const nm = nextGenjyu.statusMultipliers;
+        /*
+         * 【仕様解説・将来の定数化方針（KB-GEN2-005）】
+         * 進化時の各種ボーナス計算において、マジックナンバー `1.111`（進化時の係数）および `3`（スタミナ除数）が直接使用されています。
+         * 本家ゲームの進化時ステータス上昇ルールを再現するための係数ですが、直接記述されているため意図が読み取りにくくなっています。
+         * 本課題（KB-GEN2-005）の改修フェーズにおいて、これらを定数（例: `EVOLUTION_COEFFICIENT = 1.111;`）として定義・分離する予定です。
+         */
         currentState.pointA += Math.ceil(nm.attackFactor * 1.111);
         currentState.pointD += Math.ceil(nm.defenseFactor * 1.111);
         currentState.pointS += Math.ceil((nm.staminaFactor / 3) * 1.111);
