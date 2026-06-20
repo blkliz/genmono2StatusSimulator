@@ -660,29 +660,34 @@ function calculateDamage(atkUnit, enemy, isAllyAtk, allUnits = []) {
                 resObj.buff = { target: "all", stat: "atk", rate: 1.1 }; 
                 break;
             /*
-             * 【仕様解説・将来の改修方針（KB-GEN2-001）】
-             * 割合回復アビリティ（回復・癒唄・爽活）の回復量は、本家ゲーム仕様において「発動した幻獣の最大HP（Stamina）」ではなく、
-             * 「回復を受ける対象（味方それぞれ）の最大HP（S）」を基準に算出されます（例：癒唄なら各対象の最大HPの30%）。
-             * 現行のロジックは、便宜的に発動者である `atkUnit.maxS` を基準に一律で `resObj.heal` を算出してしまっており、仕様と異なります。
-             * 本課題（KB-GEN2-001）の改修時には、ここでの一律の `heal` 計算は行わず（あるいは回復割合のみを返す形にし）、
-             * `runBattle` の生存者回復ループ内で各ユニット（`un`）の `maxS` を用いて個別に回復量を計算する形に修正します。
+             * 【KB-GEN2-001: 割合回復の個別HP基準化】
+             * 割合回復アビリティは回復対象の最大HP（S）を基準にするよう修正しました。
+             * 個別計算のため、ここでは回復割合(`healRate`)のみをセットします。
              */
-            case "回復": resObj.heal = Math.ceil(atkUnit.maxS * 0.15); break;
-            case "癒唄": resObj.heal = Math.ceil(atkUnit.maxS * 0.30); break;
-            case "爽活": resObj.heal = Math.ceil(atkUnit.maxS * 0.20); resObj.revive = true; break;
+            case "回復": resObj.healRate = 0.15; break;
+            case "癒唄": resObj.healRate = 0.30; break;
+            case "爽活": resObj.healRate = 0.20; resObj.revive = true; break;
             /*
-             * 【仕様解説・安全対策方針（KB-GEN2-002）】
-             * 装備品（武器）の強化値（`wPlus`）とグレード（`wGrade`）をインデックスとして、回復量テーブル（`fukuinTable` / `tenharasuTable`）を参照しています。
-             * 本家仕様上、敵が回復アビリティ（福音・天晴）を使用することはありませんが、攻撃ユニット（`atkUnit`）に装備データ（`wPlus` / `wGrade`）が
-             * 定義されていない（`undefined` や `null` の）場合、テーブル参照時に `TypeError: Cannot read properties of undefined` で
-             * スクリプト全体がクラッシュする脆弱性を含んでいます。
-             * 現状の挙動（仕様）に影響を与えずに安全性を担保するため、本課題（KB-GEN2-002）の改修において、インデックスの存在チェックと
-             * 範囲外アクセスを防止するガードコード（デフォルト値への安全なフォールバック）を導入します。
+             * 【KB-GEN2-002: テーブル参照安全化】
+             * 攻撃ユニットに装備データがない場合（敵の攻撃時など）でもクラッシュしないよう、
+             * 強化値とグレードのインデックスを安全に取得・フォールバックするガードを追加しました。
              */
-            case "福音": resObj.heal = fukuinTable[atkUnit.wPlus][atkUnit.wGrade-1] || 400; resObj.revive = true; break;
+            case "福音": 
+                {
+                    const plus = (atkUnit.wPlus != null) ? Math.max(0, Math.min(20, atkUnit.wPlus)) : 0;
+                    const gIdx = (atkUnit.wGrade != null && atkUnit.wGrade >= 1) ? atkUnit.wGrade - 1 : 0;
+                    resObj.heal = (fukuinTable[plus] && fukuinTable[plus][gIdx]) ? fukuinTable[plus][gIdx] : 400;
+                    resObj.revive = true;
+                }
+                break;
             case "天晴":
-				resObj.heal = tenharasuTable[atkUnit.wPlus][atkUnit.wGrade - 1] || 2000;                resObj.revive = true; 
-                resObj.buff = { target: "all", stat: "atk", rate: 1.06 }; 
+                {
+                    const plus = (atkUnit.wPlus != null) ? Math.max(0, Math.min(20, atkUnit.wPlus)) : 0;
+                    const gIdx = (atkUnit.wGrade != null && atkUnit.wGrade >= 1) ? atkUnit.wGrade - 1 : 0;
+                    resObj.heal = (tenharasuTable[plus] && tenharasuTable[plus][gIdx]) ? tenharasuTable[plus][gIdx] : 2000;
+                    resObj.revive = true; 
+                    resObj.buff = { target: "all", stat: "atk", rate: 1.06 }; 
+                }
                 break;
         }
 
@@ -854,18 +859,17 @@ function runBattle(count) {
                     enemy.def = Math.ceil(enemy.def * resE.debuff.rate);
                 }
 		// 1. まず蘇生・回復を先行させる
-		if (resE.heal > 0) {
+		if (resE.heal > 0 || resE.healRate > 0) {
 		    units.forEach(un => {
 		        if (!un.isDead) {
 		            // 生存者は通常通り回復
                     /*
-                     * 【仕様解説・将来の改修方針（KB-GEN2-001）】
-                     * 生存者への回復適用処理です。
-                     * 現行の `un.s = Math.min(un.maxS, un.s + resE.heal)` によって、回復後の現在値自体は最大HP（S上限）で正しくクランプされています。
-                     * しかし、回復基準値（分母）が発動者基準の一律データ（`resE.heal`）になっているため、各味方の最大HPに応じた個別計算になっていません。
-                     * 本課題（KB-GEN2-001）の改修において、`calculateDamage` 側の戻り値（割合）をベースに、ループ内で個別に回復量を算出して加算する構造に変更します。
+                     * 【KB-GEN2-001: 割合回復の個別HP基準化】
+                     * 割合回復の場合は対象ごとの最大HP(`un.maxS`)を基準に計算し、S上限を超えないようクランプします。
                      */
-		            un.s = Math.min(un.maxS, un.s + resE.heal);
+                    let actualHeal = resE.healRate ? Math.ceil(un.maxS * resE.healRate) : resE.heal;
+                    actualHeal = Math.min(un.maxS, actualHeal);
+		            un.s = Math.min(un.maxS, un.s + actualHeal);
 		        } else if (resE.revive) {
 		            // 死亡者はここで蘇生（バフ判定の前に isDead を false にする）
                     /*
@@ -902,23 +906,19 @@ function runBattle(count) {
                 enemy.s -= resE.dmg;
                 if (needDetail) {
                     /*
-                     * 【仕様解説・セキュリティ対策方針（KB-GEN2-003）】
-                     * 戦闘ログの HTML（`battleSummary`）を構築して `logEl.innerHTML` に流し込む処理です。
-                     * 幻獣名（`u.name`）や敵名（`simpleEnemyName`）は `escapeHTML` でサニタイズされていますが、
-                     * アビリティ名（`resE.abi` や `resU.abi`）が未エスケープのまま埋め込まれています。
-                     * アビリティ名はマスタデータ定義であるため現在は安全ですが、将来的にカスタムアビリティなどの自由入力項目が
-                     * 導入された場合に XSS（クロスサイトスクリプティング）の脆弱性となるため、
-                     * 本課題（KB-GEN2-003）の改修においてアビリティ名も `escapeHTML(resE.abi)` で囲うように改修を行います。
+                     * 【KB-GEN2-003: 戦闘ログXSS対策】
+                     * 将来的なカスタムアビリティなどの導入に備え、アビリティ名に `escapeHTML` を適用してサニタイズしました。
                      */
                     battleSummary += `<small style="color:#888">${resE.debugInfo}</small><br>`;
-                    if (resE.heal > 0) {
+                    if (resE.heal > 0 || resE.healRate > 0) {
                     // mapの中で un.name をエスケープ
                     const statusList = units.filter(un => un).map(un => `${escapeHTML(un.name)} ${Math.floor(un.s)}/${un.maxS}`).join(',');
-                    // u.name をエスケープ
-                    battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${resE.abi}: (${statusList})<br>`;
+                    // u.name と resE.abi をエスケープ
+                    battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${escapeHTML(resE.abi)}: (${statusList})<br>`;
                     } else {
-                    // u.name をエスケープ
-                        battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${resE.abi || "攻撃"}: ${resE.dmg}(残り:${Math.max(0, enemy.s)})<br>`;
+                    // u.name と resE.abi をエスケープ
+                        const safeAbi = resE.abi ? escapeHTML(resE.abi) : "攻撃";
+                        battleSummary += `[T${currentTurn}] ${escapeHTML(u.name)}の${safeAbi}: ${resE.dmg}(残り:${Math.max(0, enemy.s)})<br>`;
                     }
                 }
                 if (enemy.s <= 0) { isWin = true; endReason = "討伐成功"; break battleLoop; }
@@ -943,8 +943,8 @@ function runBattle(count) {
 
                 if (needDetail) {
                     battleSummary += `<small style="color:#888">${resU.debugInfo}</small><br>`;
-                    // 修正点: 敵の名前(simpleEnemyName)と幻獣の名前(u.name)を両方エスケープする
-                    battleSummary += `&nbsp;&nbsp;反撃: ${escapeHTML(simpleEnemyName)}${resU.abi ? 'の' + resU.abi : ''}: ${escapeHTML(u.name)}に${resU.dmg}(残り:${Math.max(0, u.s)})<br>`;
+                    // 修正点: 敵の名前(simpleEnemyName)と幻獣の名前(u.name)に加え、アビリティ名もエスケープする
+                    battleSummary += `&nbsp;&nbsp;反撃: ${escapeHTML(simpleEnemyName)}${resU.abi ? 'の' + escapeHTML(resU.abi) : ''}: ${escapeHTML(u.name)}に${resU.dmg}(残り:${Math.max(0, u.s)})<br>`;
                 }
                 if (u.s <= 0) {
                     u.s = 0; u.isDead = true; 
