@@ -5,17 +5,13 @@
 // --- 定数・モジュール状態 ---
 
 /*
- * 【設計解説・定数ファイル分離方針（KB-GEN2-006 / KB-GEN2-004）】
- * 本ファイルで使用している転生上限レベル、レベル加算上限、転生ボーナスなどの各種定数は、
- * ステータスシミュレータ（main.js）と共通のゲームルールであるため、将来的に `sim_constants.js` に分離・一元管理します。
- * 分離予定の定数は以下の通りです：
- * 1. `LV_SP` (レベルアップ加算上限ポイント、現状498) (KB-GEN2-004)
- * 2. `TRANS_BONUS` (転生ボーナス上限ポイント、現状110) (KB-GEN2-004)
- * 3. ループ回数（4回）の決定ロジック（`calcTheoryPt` 内）
- *
- * 分離後は、`sim_constants.js` からインポートまたはグローバル変数経由で定数を参照するように修正し、
- * ステータスシミュレータ側との仕様乖離を防ぎます。
+ * 【KB-GEN2-006 / KB-GEN2-004: 定数ファイル分離済み】
+ * 以下の定数は sim_constants.js に移管しました。
+ * TheoryValues.html にて sim_constants.js を本ファイルより先にロードしてください。
+ *   - LV_SP          (KB-GEN2-004)
+ *   - TRANS_BONUS    (KB-GEN2-004)
  */
+
 
 const SEARCH_NAME_MAX_LEN = 120;
 
@@ -35,10 +31,8 @@ let currentTarget = 'a';
 let sortKey = 'a';
 let sortDesc = true;
 
-//LvUpによるポイント加算上限(+249*2)
-const LV_SP = 498;
-//転生ボーナス
-const TRANS_BONUS = 110; 
+//LvUpによるポイント加算上限(+249*2) ← sim_constants.js の LV_SP を参照
+//転生ボーナス                        ← sim_constants.js の TRANS_BONUS を参照
 
 let memoPathBonus = {};
 let memoDetailPaths = {};

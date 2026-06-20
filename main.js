@@ -3,17 +3,14 @@
 // --- 定数・マスタ参照 ---
 
 /*
- * 【設計解説・定数ファイル分離方針（KB-GEN2-006 / KB-GEN2-004）】
- * 本シミュレータ（main.js）と理論値計算（theory_calc.js）で共通して使用するゲーム仕様の定数および計算ロジックは、
- * 将来のクリーンアップフェーズにて `sim_constants.js` という共通の定数ファイルに分離・一元管理する計画です。
- * 本ファイルから分離予定の項目は以下の通りです：
- * 1. 転生ボーナスポイント算出ロジック: `getReincBonusSp()` (KB-GEN2-004)
- * 2. レベル上限判定ロジック: `getLevelLimit()` および関連する閾値定数（200 / 250）
- * 3. 状態初期化時の初期値（初期SP=5など）
- *
- * 分離後は、HTML側で `sim_constants.js` を本スクリプトより前にロードするか、ESモジュールによるインポート等で参照します。
- * この共通化により、将来の上限解放や仕様変更時の修正箇所を1箇所に集約します。
+ * 【KB-GEN2-006 / KB-GEN2-004: 定数ファイル分離済み】
+ * 以下の定数・ロジックは sim_constants.js に移管しました。
+ * StatusSimulator.html にて sim_constants.js を本ファイルより先にロードしてください。
+ *   - REINC_BONUS_MAP, TRANS_BONUS  (KB-GEN2-004: 転生ボーナス関連)
+ *   - LV_LIMIT_NORMAL, LV_LIMIT_HIGH, LV_LIMIT_THRESHOLD  (KB-GEN2-004: レベル上限関連)
+ *   - EVOLUTION_COEFF, EVOLUTION_S_DIVISOR  (KB-GEN2-005: 進化係数関連)
  */
+
 
 let genjyuMaster = (typeof GENJYU_DATA !== 'undefined') ? GENJYU_DATA : [];
 
@@ -250,8 +247,8 @@ function quickLoad() {
  * @returns {number} 該当する転生ボーナスpt
  */
 function getReincBonusSp(count) {
-    const bonusMap = [0, 30, 40, 50, 60, 70, 80, 90, 100];
-    return (count >= 9) ? 110 : (bonusMap[count] || 0);
+    // REINC_BONUS_MAP ・ TRANS_BONUS は sim_constants.js で定義
+    return (count >= 9) ? TRANS_BONUS : (REINC_BONUS_MAP[count] || 0);
 }
 
 // --- 履歴（Undo） ---
@@ -328,13 +325,13 @@ function evolveTo(targetId) {
         const nm = nextGenjyu.statusMultipliers;
         /*
          * 【仕様解説・将来の定数化方針（KB-GEN2-005）】
-         * 進化時の各種ボーナス計算において、マジックナンバー `1.111`（進化時の係数）および `3`（スタミナ除数）が直接使用されています。
-         * 本家ゲームの進化時ステータス上昇ルールを再現するための係数ですが、直接記述されているため意図が読み取りにくくなっています。
-         * 本課題（KB-GEN2-005）の改修フェーズにおいて、これらを定数（例: `EVOLUTION_COEFFICIENT = 1.111;`）として定義・分離する予定です。
+         * 【KB-GEN2-005: 進化ステータス上昇式の定数化済み】
+         * 進化時の各種ボーナス計算において使用していたマジックナンバー `1.111` および `3` を、
+         * sim_constants.js の `EVOLUTION_COEFF` / `EVOLUTION_S_DIVISOR` として定数化・分離しました。
          */
-        currentState.pointA += Math.ceil(nm.attackFactor * 1.111);
-        currentState.pointD += Math.ceil(nm.defenseFactor * 1.111);
-        currentState.pointS += Math.ceil((nm.staminaFactor / 3) * 1.111);
+        currentState.pointA += Math.ceil(nm.attackFactor * EVOLUTION_COEFF);
+        currentState.pointD += Math.ceil(nm.defenseFactor * EVOLUTION_COEFF);
+        currentState.pointS += Math.ceil((nm.staminaFactor / EVOLUTION_S_DIVISOR) * EVOLUTION_COEFF);
         currentState.id = targetId;
     }
     saveHistory();
@@ -362,7 +359,7 @@ function changeVal(type, diff) {
     render();
 }
 
-function getLevelLimit() { return (currentState.reincCount >= 8) ? 250 : 200; }
+function getLevelLimit() { return (currentState.reincCount >= LV_LIMIT_THRESHOLD) ? LV_LIMIT_HIGH : LV_LIMIT_NORMAL; }
 
 // --- UI部品 ---
 
