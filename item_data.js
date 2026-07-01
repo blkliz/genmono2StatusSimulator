@@ -92,7 +92,8 @@ const weapons = [
   { name: '照吉丸', abi: '天晴', atk: 80, grade: 10, kind: 1 },
   { name: 'ブラッディローズ', abi: '紅舞', atk: 780, grade: 10, kind: 1 },
   { name: '洒落た管楽器', abi: '和属', atk: 120, grade: 7, kind: 1 },
-  { name: 'マジデフルメイス', abi: '壮健', atk: 12, grade: 4, kind: 1 }
+  { name: 'マジデフルメイス', abi: '壮健', atk: 12, grade: 4, kind: 1 },
+  { name: '神骸脊斧', abi: '不乱', atk: 670, grade: 10, kind: 1 }
 
 ];
 
