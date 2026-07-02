@@ -591,7 +591,8 @@ const enemies = [
  { lv: 120,name: '幸運びのサティア【渚】',category: '(イベント限定フリー討伐)', attr: '地', abi: '強打', hp: 47900, atk: 4020, def: 1200 },
  { lv: 150,name: 'もふもふランナーズ',category: '(砂上のフラッグ)', attr: '獣', abi: '強打', hp: 49900, atk: 8200, def: 5560 },
  { lv: 200,name: '黒き魔弾',category: '(砂上のフラッグ)', attr: '魔', abi: '粉砕', hp: 136700, atk: 11610, def: 6350 },
- { lv: 220,name: '旗に擬態した巨大蟲',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 131700, atk: 24110, def: 9020 }
+ { lv: 220,name: '旗に擬態した巨大蟲',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 131700, atk: 24110, def: 9020 },
+ { lv: 130,name: '小さき走者たち',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 33100, atk: 4580, def: 2200 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
