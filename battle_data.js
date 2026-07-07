@@ -592,7 +592,10 @@ const enemies = [
  { lv: 150,name: 'もふもふランナーズ',category: '(砂上のフラッグ)', attr: '獣', abi: '強打', hp: 49900, atk: 8200, def: 5560 },
  { lv: 200,name: '黒き魔弾',category: '(砂上のフラッグ)', attr: '魔', abi: '粉砕', hp: 136700, atk: 11610, def: 6350 },
  { lv: 220,name: '旗に擬態した巨大蟲',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 131700, atk: 24110, def: 9020 },
- { lv: 130,name: '小さき走者たち',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 33100, atk: 4580, def: 2200 }
+ { lv: 130,name: '小さき走者たち',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 33100, atk: 4580, def: 2200 },
+ { lv: 180,name: '炎天下の伊達男',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 184300, atk: 6900, def: 16500 },
+ { lv: 220,name: '奇怪なスプリンター',category: '(砂上のフラッグ)', attr: '無', abi: '粉砕', hp: 132400, atk: 9200, def: 28200 },
+ { lv: 230,name: '舞い駆ける女神',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 222800, atk: 9700, def: 20000 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。

@@ -89,6 +89,8 @@ IF(A2="", "",
 
 </details>
 
+### ※A,B,C列の組み合わせでUNIQUE
+
 ---
 
 ## 武器 MASTER・防具 MASTER
