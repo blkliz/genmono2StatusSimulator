@@ -588,14 +588,15 @@ const enemies = [
  { lv: 140,name: 'プルミエール',category: '(過去イベント.2026.06)', attr: '霊', abi: '高揚', hp: 49600, atk: 3800, def: 6000 },
  { lv: 210,name: '輝望の少女プルミエール',category: '(過去イベント.2026.06)', attr: '霊', abi: '高揚', hp: 393100, atk: 2800, def: 5000 },
  { lv: 230,name: 'ルフルン',category: '(ウキマキマギア)', attr: '無', abi: '高揚', hp: 470700, atk: 6060, def: 6050 },
- { lv: 120,name: '幸運びのサティア【渚】',category: '(イベント限定フリー討伐)', attr: '地', abi: '強打', hp: 47900, atk: 4020, def: 1200 },
+ { lv: 120,name: '幸運びのサティア【渚】',category: '(過去イベント.2026.07)', attr: '地', abi: '強打', hp: 47900, atk: 4020, def: 1200 },
  { lv: 150,name: 'もふもふランナーズ',category: '(砂上のフラッグ)', attr: '獣', abi: '強打', hp: 49900, atk: 8200, def: 5560 },
  { lv: 200,name: '黒き魔弾',category: '(砂上のフラッグ)', attr: '魔', abi: '粉砕', hp: 136700, atk: 11610, def: 6350 },
  { lv: 220,name: '旗に擬態した巨大蟲',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 131700, atk: 24110, def: 9020 },
  { lv: 130,name: '小さき走者たち',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 33100, atk: 4580, def: 2200 },
  { lv: 180,name: '炎天下の伊達男',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 184300, atk: 6900, def: 16500 },
  { lv: 220,name: '奇怪なスプリンター',category: '(砂上のフラッグ)', attr: '無', abi: '粉砕', hp: 132400, atk: 9200, def: 28200 },
- { lv: 230,name: '舞い駆ける女神',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 222800, atk: 9700, def: 20000 }
+ { lv: 230,name: '舞い駆ける女神',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 222800, atk: 9700, def: 20000 },
+ { lv: 196,name: '謎信なる伝達者',category: '(曲名♪解明されし謎)', attr: '無', abi: '高揚', hp: 92300, atk: 7230, def: 38010 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
