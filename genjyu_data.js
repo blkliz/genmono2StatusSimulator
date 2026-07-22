@@ -988,7 +988,8 @@ const GENJYU_DATA = [
   { "genjyuId": 986, "genjyuName": "ゆでたま助け隊", "genjyuType": "無", "genjyuClass": "C", "statusMultipliers": { "staminaFactor": 20.1, "attackFactor": 9.4, "defenseFactor": 8.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ボイルドーム", "eItemRarity": 3 }, "parentIds": [,32,], "variantIds": [] },
   { "genjyuId": 987, "genjyuName": "アイアタル", "genjyuType": "龍", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 36, "attackFactor": 25.1, "defenseFactor": 12.9, "luckFactor": 1 }, "evolutionItem": { "eItemName": "トキシックタング", "eItemRarity": 7 }, "parentIds": [,922,], "variantIds": [] },
   { "genjyuId": 988, "genjyuName": "幸運びのサティア【渚】", "genjyuType": "地", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 27, "attackFactor": 8.5, "defenseFactor": 17.2, "luckFactor": 1.1 }, "evolutionItem": { "eItemName": "なついろピース", "eItemRarity": 5 }, "parentIds": [,657,], "variantIds": [] },
-  { "genjyuId": 989, "genjyuName": "旗襲の砂土蟲", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.6, "defenseFactor": 10, "luckFactor": 1 }, "evolutionItem": { "eItemName": "騙捕の偽旗", "eItemRarity": 6 }, "parentIds": [,839,], "variantIds": [] }
+  { "genjyuId": 989, "genjyuName": "旗襲の砂土蟲", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.6, "defenseFactor": 10, "luckFactor": 1 }, "evolutionItem": { "eItemName": "騙捕の偽旗", "eItemRarity": 6 }, "parentIds": [,839,], "variantIds": [] },
+  { "genjyuId": 990, "genjyuName": "謎信なる伝達者", "genjyuType": "無", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 30.3, "attackFactor": 10.8, "defenseFactor": 19.1, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ミステリアイス", "eItemRarity": 6 }, "parentIds": [,802,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
