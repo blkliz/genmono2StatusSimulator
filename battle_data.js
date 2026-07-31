@@ -281,7 +281,7 @@ const enemies = [
  { lv: 90,name: 'ジャックランタン',category: '(幻獣乱舞の儀)', attr: '魔', abi: '高揚', hp: 0, atk: 1000, def: 0 },
  { lv: 92,name: 'デーモンローズ',category: '(曲名♪薔薇の円舞曲)', attr: '地', abi: '-', hp: 38000, atk: 3200, def: 780 },
  { lv: 92,name: '高貴な洒落卵',category: '(幻獣乱舞の儀、白桃の絵画)', attr: '無', abi: '強打', hp: 61600, atk: 800, def: 3800 },
- { lv: 93,name: 'シャムシード',category: '(曲名♪刃音の徘徊)', attr: '魔', abi: '強打', hp: 31000, atk: 5800, def: 1200 },
+ { lv: 93,name: 'シャムシード',category: '(曲名♪刃音の徘徊)', attr: '無', abi: '強打', hp: 31000, atk: 5800, def: 1200 },
  { lv: 93,name: 'タンクドラゴン',category: '(青汁)', attr: '龍', abi: '強打', hp: 28300, atk: 3300, def: 1100 },
  { lv: 93,name: 'タンクドラゴン【真似】',category: '(曲名♪子守の健啖家)', attr: '龍', abi: '強打', hp: 39094, atk: 3900, def: 1100 },
  { lv: 93,name: 'スカディ【晴着】',category: '(曲名♪瑞花の宴)', attr: '霊', abi: '-', hp: 40260, atk: 3830, def: 1200 },
