@@ -596,7 +596,8 @@ const enemies = [
  { lv: 180,name: '炎天下の伊達男',category: '(砂上のフラッグ)', attr: '獣', abi: '高揚', hp: 184300, atk: 6900, def: 16500 },
  { lv: 220,name: '奇怪なスプリンター',category: '(砂上のフラッグ)', attr: '無', abi: '粉砕', hp: 132400, atk: 9200, def: 28200 },
  { lv: 230,name: '舞い駆ける女神',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 222800, atk: 9700, def: 20000 },
- { lv: 196,name: '謎信なる伝達者',category: '(曲名♪解明されし謎)', attr: '無', abi: '高揚', hp: 92300, atk: 7230, def: 38010 }
+ { lv: 196,name: '謎信なる伝達者',category: '(曲名♪解明されし謎)', attr: '無', abi: '高揚', hp: 92300, atk: 7230, def: 38010 },
+ { lv: 210,name: '鳳凰',category: '(曲名♪光満ちる桃源郷)', attr: '獣', abi: '高揚', hp: 677600, atk: 4220, def: 5750 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
