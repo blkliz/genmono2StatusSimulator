@@ -991,7 +991,8 @@ const GENJYU_DATA = [
   { "genjyuId": 989, "genjyuName": "旗襲の砂土蟲", "genjyuType": "地", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 49.2, "attackFactor": 13.6, "defenseFactor": 10, "luckFactor": 1 }, "evolutionItem": { "eItemName": "騙捕の偽旗", "eItemRarity": 6 }, "parentIds": [,839,], "variantIds": [] },
   { "genjyuId": 990, "genjyuName": "謎信なる伝達者", "genjyuType": "無", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 30.3, "attackFactor": 10.8, "defenseFactor": 19.1, "luckFactor": 1 }, "evolutionItem": { "eItemName": "ミステリアイス", "eItemRarity": 6 }, "parentIds": [,802,], "variantIds": [] },
   { "genjyuId": 991, "genjyuName": "ギリメカラ", "genjyuType": "魔", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 28.8, "attackFactor": 14.5, "defenseFactor": 12.65, "luckFactor": 1 }, "evolutionItem": { "eItemName": "煩乗魔障", "eItemRarity": 6 }, "parentIds": [,242,], "variantIds": [] },
-  { "genjyuId": 992, "genjyuName": "常世ノ天蚕", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 36, "attackFactor": 17.2, "defenseFactor": 20.8, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "非時之繭", "eItemRarity": 7 }, "parentIds": [,496,582,], "variantIds": [] }
+  { "genjyuId": 992, "genjyuName": "常世ノ天蚕", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 36, "attackFactor": 17.2, "defenseFactor": 20.8, "luckFactor": 1.3 }, "evolutionItem": { "eItemName": "非時之繭", "eItemRarity": 7 }, "parentIds": [,496,582,], "variantIds": [] },
+  { "genjyuId": 993, "genjyuName": "怨み累ねし怨霊", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 49.65, "attackFactor": 17.35, "defenseFactor": 13.6, "luckFactor": 1 }, "evolutionItem": { "eItemName": "幽淵水葬", "eItemRarity": 7 }, "parentIds": [,249,815,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
