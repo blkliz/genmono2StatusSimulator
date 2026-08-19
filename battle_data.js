@@ -598,7 +598,12 @@ const enemies = [
  { lv: 230,name: '舞い駆ける女神',category: '(砂上のフラッグ)', attr: '地', abi: '高揚', hp: 222800, atk: 9700, def: 20000 },
  { lv: 196,name: '謎信なる伝達者',category: '(曲名♪解明されし謎)', attr: '無', abi: '高揚', hp: 92300, atk: 7230, def: 38010 },
  { lv: 210,name: '鳳凰',category: '(曲名♪光満ちる桃源郷)', attr: '獣', abi: '高揚', hp: 677600, atk: 4220, def: 5750 },
- { lv: 'LVUP',name: '怨み累ねし怨霊',category: '(イベント限定フリー討伐)', attr: '霊', abi: '強打', hp: 1121, atk: 56, def: 40 }
+ { lv: 'LVUP',name: '怨み累ねし怨霊',category: '(過去イベント.2026.08)', attr: '霊', abi: '強打', hp: 1121, atk: 56, def: 40 },
+ { lv: 135,name: '憤慨するタウマース',category: '(イベント限定フリー討伐)', attr: '獣', abi: '高揚', hp: 31600, atk: 8000, def: 2500 },
+ { lv: 100,name: 'ハルピュイア',category: '(綿密な花冠)', attr: '獣', abi: '-', hp: 27600, atk: 5500, def: 3590 },
+ { lv: 150,name: 'タウマース',category: '(綿密な花冠)', attr: '獣', abi: '粉砕', hp: 67500, atk: 11140, def: 3220 },
+ { lv: 180,name: 'イーリス',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 87100, atk: 21000, def: 10000 },
+ { lv: 180,name: 'ケライノー',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 143700, atk: 20140, def: 4520 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
