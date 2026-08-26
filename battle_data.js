@@ -603,7 +603,9 @@ const enemies = [
  { lv: 100,name: 'ハルピュイア',category: '(綿密な花冠)', attr: '獣', abi: '-', hp: 27600, atk: 5500, def: 3590 },
  { lv: 150,name: 'タウマース',category: '(綿密な花冠)', attr: '獣', abi: '粉砕', hp: 67500, atk: 11140, def: 3220 },
  { lv: 180,name: 'イーリス',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 87100, atk: 21000, def: 10000 },
- { lv: 180,name: 'ケライノー',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 143700, atk: 20140, def: 4520 }
+ { lv: 180,name: 'ケライノー',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 143700, atk: 20140, def: 4520 },
+ { lv: 240,name: 'エレクトラ',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 233400, atk: 25000, def: 8150 },
+ { lv: 245,name: '純真舞戲ハルピュイア',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 255500, atk: 30110, def: 8650 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
