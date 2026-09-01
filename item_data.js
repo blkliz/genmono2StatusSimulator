@@ -176,7 +176,8 @@ const armors = [
   { name: 'なりきりレイちゃん', abi: '開運', def: 10, grade: 5, kind: 2 },
   { name: 'エレガンス・ルコー', abi: '強欲', def: 50, grade: 9, kind: 2 },
   { name: 'シバルリーエンブレム', abi: '一八', def: 450, grade: 10, kind: 2 },
-  { name: 'フェアリアルヒール', abi: '慈恵', def: 230, grade: 10, kind: 2 }
+  { name: 'フェアリアルヒール', abi: '慈恵', def: 230, grade: 10, kind: 2 },
+  { name: 'ドリーマー・ニット', abi: '強欲', def: 77, grade: 10, kind: 2 }
 
 
 ];
