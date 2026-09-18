@@ -606,8 +606,9 @@ const enemies = [
  { lv: 180,name: 'ケライノー',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 143700, atk: 20140, def: 4520 },
  { lv: 240,name: 'エレクトラ',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 233400, atk: 25000, def: 8150 },
  { lv: 245,name: '純真舞戲ハルピュイア',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 255500, atk: 30110, def: 8650 },
- { lv: 120,name: 'カカォ・トリーニ',category: '(カカォ・トリーニ)', attr: '地', abi: '高揚', hp: 48000, atk: 8000, def: 1200 },
- { lv: 150,name: '格上喰らいの蹴獣',category: '(ゴング)', attr: '獣', abi: '高揚', hp: 51100, atk: 7790, def: 5320 }
+ { lv: 120,name: 'カカォ・トリーニ',category: '(過去イベント.2026.09)', attr: '地', abi: '高揚', hp: 48000, atk: 8000, def: 1200 },
+ { lv: 150,name: '格上喰らいの蹴獣',category: '(ゴング)', attr: '獣', abi: '高揚', hp: 51100, atk: 7790, def: 5320 },
+ { lv: 100,name: '有名作家',category: '(イベント限定フリー討伐)', attr: '獣', abi: '高揚', hp: 31400, atk: 5000, def: 3000 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
