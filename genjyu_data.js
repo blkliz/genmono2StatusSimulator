@@ -996,7 +996,9 @@ const GENJYU_DATA = [
   { "genjyuId": 994, "genjyuName": "ろくろ首", "genjyuType": "魔", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 29.8, "attackFactor": 12, "defenseFactor": 12.6, "luckFactor": 1 }, "evolutionItem": { "eItemName": "轆蝋燭", "eItemRarity": 5 }, "parentIds": [,173,], "variantIds": [] },
   { "genjyuId": 995, "genjyuName": "純真舞戲ハルピュイア", "genjyuType": "獣", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 33.6, "attackFactor": 25.45, "defenseFactor": 12.35, "luckFactor": 1.2 }, "evolutionItem": { "eItemName": "憧抱を叶える羽ペン", "eItemRarity": 7 }, "parentIds": [,285,374,], "variantIds": [] },
   { "genjyuId": 996, "genjyuName": "蹴獣バジャ・グリット", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 31.5, "attackFactor": 11.9, "defenseFactor": 8.6, "luckFactor": 1 }, "evolutionItem": { "eItemName": "成すは一蹴", "eItemRarity": 4 }, "parentIds": [,27,], "variantIds": [] },
-  { "genjyuId": 997, "genjyuName": "地部砂之助", "genjyuType": "無", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 45.6, "attackFactor": 12.6, "defenseFactor": 12.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "没稿の書生", "eItemRarity": 6 }, "parentIds": [,946,], "variantIds": [] }
+  { "genjyuId": 997, "genjyuName": "地部砂之助", "genjyuType": "無", "genjyuClass": "S", "statusMultipliers": { "staminaFactor": 45.6, "attackFactor": 12.6, "defenseFactor": 12.2, "luckFactor": 1 }, "evolutionItem": { "eItemName": "没稿の書生", "eItemRarity": 6 }, "parentIds": [,946,], "variantIds": [] },
+  { "genjyuId": 998, "genjyuName": "還魂の骸導犬", "genjyuType": "霊", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 24.5, "attackFactor": 10.6, "defenseFactor": 18.05, "luckFactor": 1 }, "evolutionItem": { "eItemName": "楽迎の華骸骨", "eItemRarity": 5 }, "parentIds": [,802,], "variantIds": [] },
+  { "genjyuId": 999, "genjyuName": "魔叡主ディアヴェル", "genjyuType": "魔", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30, "attackFactor": 16.6, "defenseFactor": 23.4, "luckFactor": 1 }, "evolutionItem": { "eItemName": "カージュ・プレヌール", "eItemRarity": 7 }, "parentIds": [,836,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
