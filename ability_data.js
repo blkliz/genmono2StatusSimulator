@@ -77,6 +77,7 @@ const armorCardAbilities = [
   { name: '無属', kind: 2 },
   { name: '強欲', kind: 2 },
   { name: '早熟', kind: 2 },
-  { name: '慈恵', kind: 2 }
+  { name: '慈恵', kind: 2 },
+  { name: '賢将', kind: 2 }
 
 ];

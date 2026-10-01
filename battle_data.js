@@ -608,7 +608,7 @@ const enemies = [
  { lv: 245,name: '純真舞戲ハルピュイア',category: '(綿密な花冠)', attr: '獣', abi: '高揚', hp: 255500, atk: 30110, def: 8650 },
  { lv: 120,name: 'カカォ・トリーニ',category: '(過去イベント.2026.09)', attr: '地', abi: '高揚', hp: 48000, atk: 8000, def: 1200 },
  { lv: 150,name: '格上喰らいの蹴獣',category: '(ゴング)', attr: '獣', abi: '高揚', hp: 51100, atk: 7790, def: 5320 },
- { lv: 100,name: '有名作家',category: '(イベント限定フリー討伐)', attr: '獣', abi: '高揚', hp: 31400, atk: 5000, def: 3000 },
+ { lv: 100,name: '有名作家',category: '(過去イベント.2026.09)', attr: '獣', abi: '高揚', hp: 31400, atk: 5000, def: 3000 },
  { lv: 180,name: '地部砂之介',category: '(曲名♪筆路の道標)', attr: '獣', abi: '高揚', hp: 169200, atk: 12000, def: 10000 }
 
 
