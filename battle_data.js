@@ -611,7 +611,8 @@ const enemies = [
  { lv: 100,name: '有名作家',category: '(過去イベント.2026.09)', attr: '獣', abi: '高揚', hp: 31400, atk: 5000, def: 3000 },
  { lv: 180,name: '地部砂之介',category: '(曲名♪筆路の道標)', attr: '獣', abi: '高揚', hp: 169200, atk: 12000, def: 10000 },
  { lv: 90,name: '召喚獣ルケ',category: '(逢魔の刻.2026.10)', attr: '魔', abi: '強打', hp: 33700, atk: 5800, def: 2000 },
- { lv: 210,name: 'ハルモニア',category: '(逢魔の刻.2026.10)', attr: '霊', abi: '高揚', hp: 680123, atk: 4000, def: 5000 }
+ { lv: 210,name: 'ハルモニア',category: '(逢魔の刻.2026.10)', attr: '霊', abi: '高揚', hp: 680123, atk: 4000, def: 5000 },
+ { lv: 90,name: 'ウツボカズラ',category: '(逢魔の刻.2026.10)', attr: '地', abi: '強打', hp: 33200, atk: 2000, def: 3500 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
