@@ -610,10 +610,11 @@ const enemies = [
  { lv: 150,name: '格上喰らいの蹴獣',category: '(ゴング)', attr: '獣', abi: '高揚', hp: 51100, atk: 7790, def: 5320 },
  { lv: 100,name: '有名作家',category: '(過去イベント.2026.09)', attr: '獣', abi: '高揚', hp: 31400, atk: 5000, def: 3000 },
  { lv: 180,name: '地部砂之介',category: '(曲名♪筆路の道標)', attr: '獣', abi: '高揚', hp: 169200, atk: 12000, def: 10000 },
- { lv: 90,name: '召喚獣ルケ',category: '(逢魔の刻.2026.10)', attr: '魔', abi: '強打', hp: 33700, atk: 5800, def: 2000 },
- { lv: 210,name: 'ハルモニア',category: '(逢魔の刻.2026.10)', attr: '霊', abi: '高揚', hp: 680123, atk: 4000, def: 5000 },
- { lv: 90,name: 'ウツボカズラ',category: '(逢魔の刻.2026.10)', attr: '地', abi: '強打', hp: 33200, atk: 2000, def: 3500 },
- { lv: 210,name: 'ベリアル',category: '(逢魔の刻.2026.10)', attr: '魔', abi: '高揚', hp: 201000, atk: 20500, def: 4000 }
+ { lv: 90,name: '召喚獣ルケ',category: '(過去イベント.逢魔.2026.10)', attr: '魔', abi: '強打', hp: 33700, atk: 5800, def: 2000 },
+ { lv: 210,name: 'ハルモニア',category: '(過去イベント.逢魔.2026.10)', attr: '霊', abi: '高揚', hp: 680123, atk: 4000, def: 5000 },
+ { lv: 90,name: 'ウツボカズラ',category: '(過去イベント.逢魔.2026.10)', attr: '地', abi: '強打', hp: 33200, atk: 2000, def: 3500 },
+ { lv: 210,name: 'ベリアル',category: '(過去イベント.逢魔.2026.10)', attr: '魔', abi: '高揚', hp: 201000, atk: 20500, def: 4000 },
+ { lv: 90,name: '天狐',category: '(イベント限定フリー討伐)', attr: '獣', abi: '高揚', hp: 38900, atk: 2800, def: 2200 }
 
 
 // データ総入れ替えの際は末尾カンマ削除忘れずに。
