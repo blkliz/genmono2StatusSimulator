@@ -1000,7 +1000,8 @@ const GENJYU_DATA = [
   { "genjyuId": 998, "genjyuName": "還魂の骸導犬", "genjyuType": "霊", "genjyuClass": "A", "statusMultipliers": { "staminaFactor": 24.5, "attackFactor": 10.6, "defenseFactor": 18.05, "luckFactor": 1 }, "evolutionItem": { "eItemName": "楽迎の華骸骨", "eItemRarity": 5 }, "parentIds": [,802,], "variantIds": [] },
   { "genjyuId": 999, "genjyuName": "魔叡主ディアヴェル", "genjyuType": "魔", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 30, "attackFactor": 16.6, "defenseFactor": 23.4, "luckFactor": 1 }, "evolutionItem": { "eItemName": "カージュ・プレヌール", "eItemRarity": 7 }, "parentIds": [,836,], "variantIds": [] },
   { "genjyuId": 1000, "genjyuName": "天狐【千里】", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 25.8, "attackFactor": 9.05, "defenseFactor": 10.85, "luckFactor": 1 }, "evolutionItem": { "eItemName": "狐魂今昔", "eItemRarity": 4 }, "parentIds": [,26,35,340,557,], "variantIds": [] },
-  { "genjyuId": 1001, "genjyuName": "アマツキツネ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40.2, "attackFactor": 21.7, "defenseFactor": 12, "luckFactor": 1 }, "evolutionItem": { "eItemName": "天翔る長尾", "eItemRarity": 7 }, "parentIds": [,943,], "variantIds": [] }
+  { "genjyuId": 1001, "genjyuName": "アマツキツネ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40.2, "attackFactor": 21.7, "defenseFactor": 12, "luckFactor": 1 }, "evolutionItem": { "eItemName": "天翔る長尾", "eItemRarity": 7 }, "parentIds": [,943,], "variantIds": [] },
+  { "genjyuId": 1002, "genjyuName": "祟眼のアイナ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 31.5, "attackFactor": 16.25, "defenseFactor": 20.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "レーヴェ・オルネ", "eItemRarity": 7 }, "parentIds": [,264,], "variantIds": [] }
 
 
 //データ追加の際には最終行のカンマ消し忘れ注意。
