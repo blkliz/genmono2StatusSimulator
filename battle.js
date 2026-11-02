@@ -354,12 +354,25 @@ function updateRealStatus(id) {
     const wData = typeof weapons !== 'undefined' ? weapons.find(w => w.name === wName) : null;
     const aData = typeof armors !== 'undefined' ? armors.find(a => a.name === aName) : null;
     
+    // 1. ユニットの基本属性を取得
+    const typeMap = ["", "獣", "魔", "霊", "無", "地", "龍"];
+    let baseAttr = typeMap[document.getElementById(`manual-type-${id}`)?.value] || "";
+    
+    const aAbi = aData?.abi;
+    const attrAbis = ["獣属", "魔属", "霊属", "地属", "龍属", "無属"];
+
     if (aData) {
-		//Math.floor→Math.ceilへ修正
+        //Math.floor→Math.ceilへ修正
         d = Math.ceil(d * (1 + 0.01 * aData.grade));
+
+        // 2. 防具アビリティ計算時の属性（防具自体の属性変更のみ反映）
+        let attrForArmor = baseAttr;
+        if (attrAbis.includes(aAbi)) attrForArmor = aAbi.replace("属", "");
+
         let tempBaseA = { s, a, d, l };
-        let res = applyAbilityEffect(aData.abi, s, a, d, l, aPlus, tempBaseA);
+        let res = applyAbilityEffect(aData.abi, s, a, d, l, aPlus, tempBaseA, attrForArmor);
         s = res.s; a = res.a; d = res.d; l = res.l;
+
         /*
          * 【設計解説 / コピペ構造の現状維持】
          * 防具アビリティの適用（`aData.abi`）と防具カードアビリティの適用（`aCard`）で、ほぼ同じコードが重複して記述されています。
@@ -369,8 +382,12 @@ function updateRealStatus(id) {
          * リファクタリングによる共通化は行わないでください。
          */
         if (aCard) {
+            // 3. カードアビリティ計算時の属性（カードの属性変更を反映）
+            let attrForCard = attrForArmor;
+            if (attrAbis.includes(aCard)) attrForCard = aCard.replace("属", "");
+
             let tempBaseC = { s, a, d, l };
-            let resC = applyAbilityEffect(aCard, s, a, d, l, aPlus, tempBaseC);
+            let resC = applyAbilityEffect(aCard, s, a, d, l, aPlus, tempBaseC, attrForCard);
             s = resC.s; a = resC.a; d = resC.d; l = resC.l;
         }
     }
@@ -394,12 +411,12 @@ function updateRealStatus(id) {
     if (rl) rl.textContent = Math.ceil(l);
 }
 
-function applyAbilityEffect(abi, s, a, d, l, plus, base) {
+function applyAbilityEffect(abi, s, a, d, l, plus, base, attr) {
     let res = { s, a, d, l };
     if (!abi || abi === "なし") return res;
     let diff = 0;
     switch (abi) {
-		//Math.floor→Math.ceilへ
+        //Math.floor→Math.ceilへ
         case "成長": res.s += 300; break;
         case "持久": res.s += Math.ceil(base.s * 0.15); break;
         case "底力": res.s += Math.ceil(base.s * 0.20); break;
@@ -410,6 +427,12 @@ function applyAbilityEffect(abi, s, a, d, l, plus, base) {
         case "虎咆": res.l += 100; res.a += Math.ceil(base.a * (plus * 0.0125)); break;
         case "猛将": res.a += Math.ceil(base.a * (plus * 0.02)); break;
         case "猛皇": res.a += Math.ceil(base.a * (plus * 0.04)); break;
+        case "澪猛": 
+            res.l += 100; 
+            if (attr === "無" || attr === "霊") {
+                res.a += Math.ceil(base.a * (plus * 0.025)); 
+            } 
+            break;
         case "強固": res.d += 50; break;
         case "頑固": res.d += Math.ceil(base.d * 0.10); break;
         case "鉄壁": res.d += Math.ceil(base.d * 0.15); break;
