@@ -1002,7 +1002,7 @@ const GENJYU_DATA = [
   { "genjyuId": 1000, "genjyuName": "天狐【千里】", "genjyuType": "獣", "genjyuClass": "B", "statusMultipliers": { "staminaFactor": 25.8, "attackFactor": 9.05, "defenseFactor": 10.85, "luckFactor": 1 }, "evolutionItem": { "eItemName": "狐魂今昔", "eItemRarity": 4 }, "parentIds": [,26,35,340,557,], "variantIds": [] },
   { "genjyuId": 1001, "genjyuName": "アマツキツネ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 40.2, "attackFactor": 21.7, "defenseFactor": 12, "luckFactor": 1 }, "evolutionItem": { "eItemName": "天翔る長尾", "eItemRarity": 7 }, "parentIds": [,943,], "variantIds": [] },
   { "genjyuId": 1002, "genjyuName": "祟眼のアイナ", "genjyuType": "霊", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 31.5, "attackFactor": 16.25, "defenseFactor": 20.3, "luckFactor": 1 }, "evolutionItem": { "eItemName": "レーヴェ・オルネ", "eItemRarity": 7 }, "parentIds": [,264,], "variantIds": [] },
-
+  { "genjyuId": 1003, "genjyuName": "夜刀神", "genjyuType": "龍", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 42, "attackFactor": 13.4, "defenseFactor": 23.6, "luckFactor": 1 }, "evolutionItem": { "eItemName": "神域隔つ界標", "eItemRarity": 7 }, "parentIds": [,818,], "variantIds": [] },
   { "genjyuId": 1004, "genjyuName": "メタトロン", "genjyuType": "無", "genjyuClass": "SS", "statusMultipliers": { "staminaFactor": 39.6, "attackFactor": 24.6, "defenseFactor": 13.2, "luckFactor": 2 }, "evolutionItem": { "eItemName": "天書の黒晶", "eItemRarity": 7 }, "parentIds": [,280,], "variantIds": [] }
 
 
