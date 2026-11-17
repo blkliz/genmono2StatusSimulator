@@ -623,6 +623,7 @@ const enemies = [
  { lv: 230,name: '塵塚怪王',category: '(壊曲♪塵も積もれば)', attr: '魔', abi: '粉砕', hp: 280200, atk: 10000, def: 23000 },
  { lv: 80,name: '塵塚怪王【小濁】',category: '(お掃除セット)', attr: '魔', abi: '強打', hp: 55400, atk: 3200, def: 1500 },
  { lv: 80,name: '屍喰らう神官',category: '(イベント限定フリー討伐)', attr: '魔', abi: '強打', hp: 26100, atk: 1400, def: 3400 },
+ { lv: 100,name: '錯乱した猫の使い魔',category: '(棺針盤)', attr: '魔', abi: '高揚', hp: 35300, atk: 5500, def: 2500 },
  { lv: 180,name: '納骨堂の爪牙',category: '(棺針盤)', attr: '魔', abi: '高揚', hp: 126900, atk: 8580, def: 3100 },
  { lv: 220,name: '納骨堂の葬神',category: '(棺針盤)', attr: '魔', abi: '高揚', hp: 404600, atk: 2000, def: 13000 }
 
